@@ -9,9 +9,13 @@ class TaskManagerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Task Manager',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: mainColor,
+        appBarTheme: const AppBarTheme(
+          foregroundColor: Colors.white,
+        ),
         primaryTextTheme: TextTheme(
           titleLarge: TextStyle(
             fontSize: 24,
@@ -30,7 +34,14 @@ class TaskManagerApp extends StatelessWidget {
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(
-            borderSide: BorderSide.none
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.all(Radius.circular(8.0))
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: mainColor, width: 1
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(8.0))
           ),
           contentPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12)
         ),

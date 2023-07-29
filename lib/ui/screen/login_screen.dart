@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screen/bottom_nav_base.dart';
 import 'package:task_manager/ui/screen/email_verification_screen.dart';
 import 'package:task_manager/ui/screen/singup_screen.dart';
 import 'package:task_manager/ui/utils/assets_utils.dart';
@@ -48,7 +49,10 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 16,),
             ElevatedButton(
               onPressed: () {
-
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BottomNavBase()),
+                  (route) => false);
               },
               child: Image.asset(AssetsUtils.forwardPNG,),
             ),
