@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screen/email_verification_screen.dart';
+import 'package:task_manager/ui/screen/singup_screen.dart';
 import 'package:task_manager/ui/utils/assets_utils.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
@@ -32,6 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 hintText: 'Email',
                 labelText: 'Email'
               ),
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: 12,),
             TextFormField(
@@ -40,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 hintText: 'Password',
                 labelText: 'Password'
               ),
+              obscureText: true,
             ),
             const SizedBox(height: 16,),
             ElevatedButton(
@@ -70,7 +74,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 const Text("Don't have account? "),
                 TextButton(
                   onPressed: () {
-
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SignupScreen()
+                        ));
                   },
                   child: const Text('Sign Up'),
                 ),
