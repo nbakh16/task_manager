@@ -15,10 +15,16 @@ class TaskManagerApp extends StatelessWidget {
         primaryTextTheme: TextTheme(
           titleLarge: TextStyle(
             fontSize: 24,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
             color: Colors.black.withOpacity(0.75),
             letterSpacing: 0.75
           ),
+          titleSmall: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Colors.black.withOpacity(0.5),
+            letterSpacing: 0.5
+          )
         ),
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
@@ -35,8 +41,11 @@ class TaskManagerApp extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0)
             ),
-            foregroundColor: Colors.white
-          )
+            foregroundColor: Colors.white,
+            fixedSize: Size(
+              MediaQuery.sizeOf(context).width,
+              MediaQuery.sizeOf(context).height * 0.05),
+          ),
         ),
       ),
       darkTheme: ThemeData(

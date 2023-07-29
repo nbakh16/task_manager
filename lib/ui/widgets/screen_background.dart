@@ -23,7 +23,18 @@ class ScreenBackground extends StatelessWidget {
           ),
         ),
 
-        SafeArea(child: child)
+        GestureDetector(
+          onTap: ()=> FocusScope.of(context).unfocus(),
+          child: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(MediaQuery.sizeOf(context).width * 0.075),
+                  child: child,
+          ),
+              ),
+            )),
+        )
       ],
     );
   }
