@@ -30,6 +30,15 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _isLoading = false;
 
   Future<void> userSignup() async {
+    if(!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    _isLoading = true;
+    if(mounted) {
+      setState(() {});
+    }
+
     Map<String, dynamic> requestBody = {
       "email": _emailTEController.text.trim(),
       "firstName": _firstNameTEController.text.trim(),
@@ -38,11 +47,6 @@ class _SignupScreenState extends State<SignupScreen> {
       "password": _passwordTEController.text,
       "photo": ""
     };
-
-    _isLoading = true;
-    if(mounted) {
-      setState(() {});
-    }
     final NetworkResponse response =
         await NetworkCaller().postRequest(Urls.signupUrl, requestBody);
 
@@ -163,7 +167,12 @@ class _SignupScreenState extends State<SignupScreen> {
                       labelText: 'Password'
                   ),
                   obscureText: true,
-                  onEditingComplete: userSignup,
+                  onEditingComplete: () {
+                    if(!_formKey.currentState!.validate()) {
+                      return;
+                    }
+                    userSignup();
+                  },
                   validator: (String? value) {
                     if(value?.isEmpty ?? true) {
                       return 'Please enter Password!';
