@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:task_manager/data/utils/auth_utility.dart';
+import 'package:task_manager/ui/screen/bottom_nav_base.dart';
 import 'package:task_manager/ui/screen/login_screen.dart';
 import 'package:task_manager/ui/utils/assets_utils.dart';
 import 'package:task_manager/ui/utils/colors.dart';
@@ -21,12 +23,19 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigateToNextPage() {
-    Future.delayed(const Duration(seconds: 3)).then((value){
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-              (route) => false
-      );
+    Future.delayed(const Duration(seconds: 3)).then((value) async {
+      final bool isUserLoggedIn = await AuthUtility.isUserLoggedIn();
+
+      if(mounted) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => isUserLoggedIn
+                    ? const BottomNavBase()
+                    : const LoginScreen()
+            ),
+            (route) => false);
+      }
     });
   }
 

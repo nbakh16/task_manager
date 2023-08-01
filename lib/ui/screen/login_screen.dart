@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/login_model.dart';
+import 'package:task_manager/data/utils/auth_utility.dart';
 import 'package:task_manager/ui/screen/bottom_nav_base.dart';
 import 'package:task_manager/ui/screen/email_verification_screen.dart';
 import 'package:task_manager/ui/screen/singup_screen.dart';
@@ -48,6 +50,9 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if(response.isSuccess && mounted) {
+      LoginModel loginModel = LoginModel.fromJson(response.body!);
+      await AuthUtility.saveUserInfo(loginModel);
+
       _emailTEController.clear();
       _passwordTEController.clear();
 
