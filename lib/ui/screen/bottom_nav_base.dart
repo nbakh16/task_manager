@@ -5,6 +5,8 @@ import 'package:task_manager/ui/screen/tasks/new_tasks_screen.dart';
 import 'package:task_manager/ui/screen/tasks/progress_tasks_screen.dart';
 import 'package:task_manager/ui/utils/colors.dart';
 
+import '../utils/assets_utils.dart';
+
 class BottomNavBase extends StatefulWidget {
   const BottomNavBase({super.key});
 
@@ -25,6 +27,27 @@ class _BottomNavBaseState extends State<BottomNavBase> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Full Name',
+              style: Theme.of(context).primaryTextTheme.titleLarge!.copyWith(
+                color: Colors.white
+              )),
+            Text('email@abc.com',
+              style: Theme.of(context).primaryTextTheme.titleSmall!.copyWith(
+                color: mainColor.shade50
+              )),
+          ],
+        ),
+        leading: Padding(
+          padding: const EdgeInsets.all(5),
+          child: CircleAvatar(
+            child: Image.asset(AssetsUtils.forwardPNG),
+          ),
+        ),
+      ),
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         elevation: 8,

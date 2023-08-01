@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:task_manager/ui/screen/splash_screen.dart';
 import 'package:task_manager/ui/utils/colors.dart';
 
@@ -22,18 +23,23 @@ class TaskManagerApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.white,
         ),
+        textTheme: GoogleFonts.nunitoTextTheme(),
         primaryTextTheme: TextTheme(
-          titleLarge: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
-            color: Colors.black.withOpacity(0.75),
-            letterSpacing: 0.75
+          titleLarge: GoogleFonts.oswald(
+            textStyle: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: Colors.black.withOpacity(0.75),
+              letterSpacing: 1.25
+            ),
           ),
-          titleSmall: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: Colors.black.withOpacity(0.5),
-            letterSpacing: 0.5
+          titleSmall: GoogleFonts.nunito(
+           textStyle: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: Colors.black.withOpacity(0.5),
+              letterSpacing: 0.5
+            )
           )
         ),
         inputDecorationTheme: const InputDecorationTheme(

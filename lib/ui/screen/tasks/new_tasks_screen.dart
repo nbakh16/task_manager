@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/utils/assets_utils.dart';
 import 'package:task_manager/ui/utils/colors.dart';
 
 import '../../widgets/summary_card.dart';
@@ -17,26 +16,6 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: mainColor.shade50,
-      appBar: AppBar(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Full Name'),
-            Text('email@abc.com',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.normal
-              ),
-            ),
-          ],
-        ),
-        leading: Padding(
-          padding: const EdgeInsets.all(5),
-          child: CircleAvatar(
-            child: Image.asset(AssetsUtils.forwardPNG),
-          ),
-        ),
-      ),
       body: Padding(
         padding: EdgeInsets.all(MediaQuery.sizeOf(context).width * 0.02),
         child: Column(

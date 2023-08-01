@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:task_manager/ui/screen/login_screen.dart';
 import 'package:task_manager/ui/utils/assets_utils.dart';
+import 'package:task_manager/ui/utils/colors.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -33,11 +34,23 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ScreenBackground(
-        child: Center(
-          child: SvgPicture.asset(AssetsUtils.logoSVG,
-            width: MediaQuery.sizeOf(context).width * 0.25,
-            fit: BoxFit.scaleDown,
-          ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Opacity(
+              opacity: 0.1,
+              child: SvgPicture.asset(AssetsUtils.ostadLogoSVG,
+                width: MediaQuery.sizeOf(context).width * 0.85,
+                fit: BoxFit.scaleDown,
+              ),
+            ),
+            Text('Task\nManager', textAlign: TextAlign.center,
+              style: Theme.of(context).primaryTextTheme.titleLarge!.copyWith(
+                color: mainColor,
+                fontSize: MediaQuery.sizeOf(context).width * 0.125
+              )
+            ),
+          ],
         ),
       ),
     );

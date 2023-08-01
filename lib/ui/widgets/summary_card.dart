@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/utils/colors.dart';
 
 class SummaryCard extends StatelessWidget {
   const SummaryCard({
@@ -17,7 +16,7 @@ class SummaryCard extends StatelessWidget {
       child: Card(
         elevation: 4,
         color: Colors.white,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8))
         ),
         child: Padding(
