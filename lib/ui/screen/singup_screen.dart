@@ -28,6 +28,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
 
   bool _isLoading = false;
+  bool _isObscureText = true;
 
   Future<void> userSignup() async {
     if(!_formKey.currentState!.validate()) {
@@ -62,6 +63,8 @@ class _SignupScreenState extends State<SignupScreen> {
       _lastNameTEController.clear();
       _mobileTEController.clear();
       _passwordTEController.clear();
+
+      FocusScope.of(context).unfocus();
 
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sign up successful!'),
         backgroundColor: mainColor,));
@@ -162,17 +165,24 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(height: 12,),
                 TextFormField(
                   controller: _passwordTEController,
-                  decoration: const InputDecoration(
-                      hintText: 'Password',
-                      labelText: 'Password'
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
+                        onPressed: (){
+                          _isObscureText = !_isObscureText;
+                          setState(() {});
+                        },
+                        icon: Icon(
+                          _isObscureText
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: mainColor.shade200,
+                        )
+                    )
                   ),
-                  obscureText: true,
-                  onEditingComplete: () {
-                    if(!_formKey.currentState!.validate()) {
-                      return;
-                    }
-                    userSignup();
-                  },
+                  obscureText: _isObscureText,
+                  onEditingComplete: userSignup,
                   validator: (String? value) {
                     if(value?.isEmpty ?? true) {
                       return 'Please enter Password!';
@@ -187,32 +197,35 @@ class _SignupScreenState extends State<SignupScreen> {
                 Visibility(
                   visible: _isLoading == false,
                   replacement: const Center(child: CircularProgressIndicator()),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if(!_formKey.currentState!.validate()) {
-                        return;
-                      }
-                      userSignup();
-                    },
-                    child: Image.asset(AssetsUtils.forwardPNG,),
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: userSignup,
+                        child: Image.asset(AssetsUtils.forwardPNG,),
+                      ),
+                      signInButton(context)
+                    ],
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Have account? "),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Sign In'),
-                    ),
-                  ],
-                )
               ],
             ),
           ),
         )
+    );
+  }
+
+  Row signInButton(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Have account? "),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Sign In'),
+        ),
+      ],
     );
   }
 }

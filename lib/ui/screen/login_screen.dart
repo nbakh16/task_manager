@@ -21,9 +21,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
+  bool _isObscureText = true;
 
   Future<void> loginUser() async {
     if(!_formKey.currentState!.validate()) {
@@ -101,11 +102,23 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 12,),
               TextFormField(
                 controller: _passwordTEController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Password',
-                  labelText: 'Password'
+                  labelText: 'Password',
+                  suffixIcon: IconButton(
+                    onPressed: (){
+                      _isObscureText = !_isObscureText;
+                      setState(() {});
+                    },
+                    icon: Icon(
+                      _isObscureText
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                      color: mainColor.shade200,
+                    )
+                  )
                 ),
-                obscureText: true,
+                obscureText: _isObscureText,
                 textInputAction: TextInputAction.done,
                 onEditingComplete: loginUser,
                 validator: (String? value) {
@@ -122,47 +135,59 @@ class _LoginScreenState extends State<LoginScreen> {
               Visibility(
                 visible: _isLoading == false,
                 replacement: const Center(child: CircularProgressIndicator(),),
-                child: ElevatedButton(
-                  onPressed: loginUser,
-                  child: Image.asset(AssetsUtils.forwardPNG,),
-                ),
-              ),
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const EmailVerificationScreen()
-                    ));
-                },
-                  child: Text('Forgot Password?',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.5)
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: loginUser,
+                      child: Image.asset(AssetsUtils.forwardPNG,),
                     ),
-                  ),
+                    forgotPasswordButton(context),
+                    signUpButton(context)
+                  ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Don't have account? "),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignupScreen()
-                          ));
-                    },
-                    child: const Text('Sign Up'),
-                  ),
-                ],
-              )
             ],
           ),
         ),
       )
+    );
+  }
+
+  Center forgotPasswordButton(BuildContext context) {
+    return Center(
+      child: TextButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const EmailVerificationScreen()
+              ));
+        },
+        child: Text('Forgot Password?',
+          style: TextStyle(
+              color: Colors.black.withOpacity(0.5)
+          ),
+        ),
+      ),
+    );
+  }
+
+  Row signUpButton(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Don't have account? "),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const SignupScreen()
+                ));
+          },
+          child: const Text('Sign Up'),
+        ),
+      ],
     );
   }
 }

@@ -13,6 +13,12 @@ class TaskManagerApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: mainColor,
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: <TargetPlatform, PageTransitionsBuilder>{
+            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+          },
+        ),
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.white,
         ),
@@ -42,6 +48,12 @@ class TaskManagerApp extends StatelessWidget {
               color: mainColor, width: 1
             ),
             borderRadius: BorderRadius.all(Radius.circular(8.0))
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: Colors.red, width: 1
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(8.0))
           ),
           contentPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12)
         ),
