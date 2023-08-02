@@ -14,10 +14,15 @@ const MaterialColor mainColor = MaterialColor(_mainColorPrimaryValue, <int, Colo
 });
 const int _mainColorPrimaryValue = 0xFF21BF73;
 
-const MaterialColor mainColorAccent = MaterialColor(_maincolorAccentValue, <int, Color>{
+const MaterialColor mainColorAccent = MaterialColor(_mainColorAccentValue, <int, Color>{
   100: Color(0xFFC9FFDC),
-  200: Color(_maincolorAccentValue),
+  200: Color(_mainColorAccentValue),
   400: Color(0xFF63FF98),
   700: Color(0xFF4AFF87),
 });
-const int _maincolorAccentValue = 0xFF96FFBA;
+const int _mainColorAccentValue = 0xFF96FFBA;
+
+const Color newTaskColor = Colors.blueAccent;
+const Color progressTaskColor = Color(0xFFFF0090);
+const Color canceledTaskColor = Color(0xFFDC143C);
+const Color completedTaskColor = mainColor;

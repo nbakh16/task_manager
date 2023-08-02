@@ -32,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if(!_formKey.currentState!.validate()) {
       return;
     }
+    FocusScope.of(context).unfocus();
 
     _isLoading = true;
     if(mounted) {
@@ -57,8 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
       _passwordTEController.clear();
 
       if(mounted) {
-        FocusScope.of(context).unfocus();
-
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Login Successful!'),
           backgroundColor: mainColor,

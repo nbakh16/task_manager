@@ -36,6 +36,7 @@ class _SignupScreenState extends State<SignupScreen> {
     if(!_formKey.currentState!.validate()) {
       return;
     }
+    FocusScope.of(context).unfocus();
 
     _isLoading = true;
     if(mounted) {
@@ -66,7 +67,6 @@ class _SignupScreenState extends State<SignupScreen> {
       _mobileTEController.clear();
       _passwordTEController.clear();
 
-      FocusScope.of(context).unfocus();
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sign up successful!'),
         backgroundColor: mainColor,));
 

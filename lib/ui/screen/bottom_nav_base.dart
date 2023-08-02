@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
+import 'package:task_manager/ui/screen/create_task_screen.dart';
 import 'package:task_manager/ui/screen/splash_screen.dart';
 import 'package:task_manager/ui/screen/tasks/canceled_tasks_screen.dart';
 import 'package:task_manager/ui/screen/tasks/completed_tasks_screen.dart';
@@ -59,6 +60,13 @@ class _BottomNavBaseState extends State<BottomNavBase> {
           BottomNavigationBarItem(icon: Icon(Icons.filter_3), label: 'Canceled'),
           BottomNavigationBarItem(icon: Icon(Icons.filter_4), label: 'Progress'),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const CreateTaskScreen()));
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

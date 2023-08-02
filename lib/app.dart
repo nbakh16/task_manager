@@ -3,12 +3,19 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:task_manager/ui/screen/splash_screen.dart';
 import 'package:task_manager/ui/utils/colors.dart';
 
-class TaskManagerApp extends StatelessWidget {
+class TaskManagerApp extends StatefulWidget {
+  static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
   const TaskManagerApp({super.key});
 
   @override
+  State<TaskManagerApp> createState() => _TaskManagerAppState();
+}
+
+class _TaskManagerAppState extends State<TaskManagerApp> {
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      key: TaskManagerApp.globalKey,
       title: 'Task Manager',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -84,6 +91,12 @@ class TaskManagerApp extends StatelessWidget {
               MediaQuery.sizeOf(context).height * 0.05),
           ),
         ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          elevation: 3,
+          focusElevation: 6,
+          foregroundColor: Colors.white,
+          iconSize: 32,
+        )
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark

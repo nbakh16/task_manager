@@ -1,13 +1,19 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:task_manager/app.dart';
 import 'package:task_manager/data/models/network_response.dart';
+import 'package:task_manager/data/utils/auth_utility.dart';
+import 'package:task_manager/ui/screen/splash_screen.dart';
 
 class NetworkCaller {
   Future<NetworkResponse> getRequest(String url) async {
     try{
-      Response response = await get(Uri.parse(url));
+      Response response = await get(
+        Uri.parse(url),
+        headers: {'token' : AuthUtility.userInfo.token.toString()}
+      );
 
       if(response.statusCode == 200) {
         return NetworkResponse(true, response.statusCode, jsonDecode(response.body));
@@ -24,7 +30,10 @@ class NetworkCaller {
     try {
       Response response = await post(
         Uri.parse(url),
-        headers: {'Content-Type' : 'application/json'},
+        headers: {
+          'Content-Type' : 'application/json',
+          // 'token' : AuthUtility.userInfo.token.toString()
+        },
         body: jsonEncode(body)
       );
 
@@ -33,7 +42,11 @@ class NetworkCaller {
 
       if(response.statusCode == 200) {
         return NetworkResponse(true, response.statusCode, jsonDecode(response.body));
-      } else {
+      }
+      else if(response.statusCode == 401) {
+        signOut();
+      }
+      else {
         return NetworkResponse(false, response.statusCode, null);
       }
     } catch(e) {
@@ -41,5 +54,14 @@ class NetworkCaller {
     }
 
     return NetworkResponse(false, -1, null);
+  }
+
+  Future<void> signOut() async {
+    await AuthUtility.clearUserInfo();
+
+    Navigator.pushAndRemoveUntil(
+        TaskManagerApp.globalKey.currentState!.context,
+        MaterialPageRoute(builder: (context) => const SplashScreen()), (
+        route) => false);
   }
 }
