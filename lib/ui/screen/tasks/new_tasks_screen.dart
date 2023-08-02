@@ -9,6 +9,7 @@ import 'package:task_manager/ui/utils/colors.dart';
 import '../../../data/models/task_model.dart';
 import '../../../data/utils/task_status.dart';
 import '../../../data/utils/urls.dart';
+import '../../widgets/custom_aler_dialog.dart';
 import '../../widgets/summary_card.dart';
 import '../../widgets/task_card.dart';
 
@@ -35,6 +36,9 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
   }
 
   Future<void> getTaskStatusCount() async {
+    newTaskCount=0; progressTaskCount=0;
+    completedTaskCount=0; canceledTaskCount=0;
+
     _isLoading = true;
     if(mounted) {
       setState(() {});
@@ -146,35 +150,9 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
           ),
           const Padding(
             padding: EdgeInsets.only(top: 12.0),
-            child: Text('Not New Task'),
+            child: Text('No New Task'),
           )
         ],
-      ),
-    );
-  }
-
-  Expanded tasksListViewBuilder() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 14.0),
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 60.0),
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              itemCount: newTasksList.length,
-              itemBuilder: (context, index) {
-                return TaskCard(
-                  title: newTasksList[index].title ?? '',
-                  description: newTasksList[index].description ?? '',
-                  date: newTasksList[index].createdDate ?? '',
-                  status: newTasksList[index].status ?? '',
-                );
-              }),
-          ),
-        ),
       ),
     );
   }
@@ -200,5 +178,57 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
         ),
       ],
     );
+  }
+
+  Expanded tasksListViewBuilder() {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 14.0),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 60.0),
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const ScrollPhysics(),
+              itemCount: newTasksList.length,
+              itemBuilder: (context, index) {
+                return TaskCard(
+                  title: newTasksList[index].title ?? '',
+                  description: newTasksList[index].description ?? '',
+                  date: newTasksList[index].createdDate ?? '',
+                  status: newTasksList[index].status ?? '',
+                  onEdit: (){},
+                  onDelete: () async {
+                    showDialog(barrierDismissible: false,
+                        context: context, builder: (_) => CustomAlertDialog(
+                            onPress: () => deleteTask(newTasksList[index].sId ?? ''),
+                            title: 'Delete Task',
+                            content: 'Deleting task "${newTasksList[index].title}"',
+                            actionText: 'Confirm'
+                        ));
+                  },
+                );
+              }),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> deleteTask(String id) async {
+    final NetworkResponse response = await NetworkCaller().getRequest('${Urls.deleteTaskUrl}$id');
+
+    if(response.isSuccess && mounted) {
+      Navigator.pop(context);
+      getNewTasksList();
+      getTaskStatusCount();
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Task delete failed!'),
+        backgroundColor: Colors.red,
+      ));
+    }
   }
 }

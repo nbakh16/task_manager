@@ -4,10 +4,16 @@ import 'package:task_manager/ui/utils/colors.dart';
 class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
-    required this.title, required this.description, required this.date, required this.status,
+    required this.title,
+    required this.description,
+    required this.date,
+    required this.status,
+    required this.onEdit,
+    required this.onDelete,
   });
 
   final String title, description, date, status;
+  final Function() onEdit, onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +60,11 @@ class TaskCard extends StatelessWidget {
                     ),
                     const Spacer(),
                     IconButton(
-                      onPressed: (){},
+                      onPressed: onEdit,
                       icon: const Icon(Icons.edit, color: mainColor,)
                     ),
                     IconButton(
-                        onPressed: (){},
+                        onPressed: onDelete,
                         icon: Icon(Icons.delete, color: Colors.red.shade400,)
                     )
                   ],

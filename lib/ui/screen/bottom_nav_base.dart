@@ -7,6 +7,13 @@ import 'package:task_manager/ui/screen/tasks/completed_tasks_screen.dart';
 import 'package:task_manager/ui/screen/tasks/new_tasks_screen.dart';
 import 'package:task_manager/ui/screen/tasks/progress_tasks_screen.dart';
 import 'package:task_manager/ui/utils/colors.dart';
+import 'package:task_manager/ui/widgets/custom_aler_dialog.dart';
+
+import '../../data/models/network_response.dart';
+import '../../data/services/network_caller.dart';
+import '../../data/utils/task_status.dart';
+import '../../data/utils/urls.dart';
+import '../utils/assets_utils.dart';
 
 class BottomNavBase extends StatefulWidget {
   const BottomNavBase({super.key});
@@ -24,6 +31,58 @@ class _BottomNavBaseState extends State<BottomNavBase> {
     CanceledTasksScreen(),
     ProgressTasksScreen()
   ];
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _titleTEController = TextEditingController();
+  final TextEditingController _descriptionTEController = TextEditingController();
+
+  bool _isLoading = false;
+
+  Future<void> createTask() async {
+    if(!_formKey.currentState!.validate()) {
+      return;
+    }
+    FocusScope.of(context).unfocus();
+
+    _isLoading = true;
+    if(mounted) {
+      setState(() {});
+    }
+
+    Map<String, dynamic> requestBody = {
+      "title":_titleTEController.text.trim(),
+      "description":_descriptionTEController.text.trim(),
+      "status":TaskStatus.newTask
+    };
+    final NetworkResponse response =
+    await NetworkCaller().postRequest(Urls.createTaskUrl, requestBody);
+
+    _isLoading = false;
+    if(mounted) {
+      setState(() {});
+    }
+
+    if(response.isSuccess && mounted) {
+      _titleTEController.clear();
+      _descriptionTEController.clear();
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Task created successfully!'),
+        backgroundColor: newTaskColor,
+      ));
+
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) => const BottomNavBase()),
+              (route) => false);
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Task creation failed!'),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,13 +121,98 @@ class _BottomNavBaseState extends State<BottomNavBase> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const CreateTaskScreen()));
-        },
+        // onPressed: () {
+        //   Navigator.push(context,
+        //       MaterialPageRoute(builder: (context) => const CreateTaskScreen()));
+        // },
+        onPressed: addTaskModalBottomSheet,
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  void addTaskModalBottomSheet() {
+    showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(16.0)
+        )),
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom + 18,
+                right: 18,
+                left: 18,
+                top: 18),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Add new Task',
+                      style: Theme.of(context).primaryTextTheme.titleLarge
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _titleTEController,
+                    decoration: const InputDecoration(
+                        hintText: 'Title of the task',
+                        labelText: 'Title'
+                    ),
+                    maxLines: 1,
+                    maxLength: 50,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
+                    validator: (String? value) {
+                      if(value?.isEmpty ?? true) {
+                        return 'Missing title!';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 12,),
+                  TextFormField(
+                    controller: _descriptionTEController,
+                    decoration: const InputDecoration(
+                      hintText: 'Brief description',
+                      labelText: 'Description',
+                    ),
+                    maxLines: 4,
+                    maxLength: 250,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: createTask,
+                    // validator: (String? value) {
+                    //   if(value?.isEmpty ?? true) {
+                    //     return 'Description';
+                    //   }
+                    //   return null;
+                    // },
+                  ),
+                  const SizedBox(height: 16,),
+                  Visibility(
+                    visible: _isLoading == false,
+                    replacement: const Center(child: CircularProgressIndicator(),),
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: createTask,
+                          child: Image.asset(AssetsUtils.forwardPNG,),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   Column appBarTitle(BuildContext context) {
@@ -106,49 +250,21 @@ class _BottomNavBaseState extends State<BottomNavBase> {
 
   Future<dynamic> signOutShowDialog(BuildContext context) {
     return showDialog(barrierDismissible: false,
-      context: context, builder: (_) => AlertDialog(
-        titlePadding: EdgeInsets.zero,
-        contentPadding: const EdgeInsets.only(left: 25),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16)
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Text('Sign Out',
-                style: Theme.of(context).primaryTextTheme.titleLarge,
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.cancel_outlined,
-                color: Colors.red.withOpacity(0.75),
-              ))
-          ],
-        ),
-        content: Text('Are you sure to sign out?',
-            style: Theme.of(context).primaryTextTheme.titleSmall
-        ),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              await AuthUtility.clearUserInfo();
-
-              if(mounted) {
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                    builder: (context) => const SplashScreen()),
-                        (route) => false);
-              }
-            },
-            child: const Text('Sign Out'),
-          ),
-        ],
+      context: context, builder: (_) => CustomAlertDialog(
+        onPress: signOut,
+        title: 'Sign Out',
+        content: 'Are you sure to sign out? You will be redirected to login page.',
+        actionText: 'Sign Out'
     ));
+  }
+
+  Future<void> signOut() async{
+    await AuthUtility.clearUserInfo();
+
+    if(mounted) {
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+          builder: (context) => const SplashScreen()),
+              (route) => false);
+    }
   }
 }

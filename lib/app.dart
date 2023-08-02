@@ -62,19 +62,19 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
           fillColor: Colors.white,
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
-            borderRadius: BorderRadius.all(Radius.circular(8.0))
+            borderRadius: BorderRadius.all(Radius.circular(12.0))
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: mainColor, width: 1
             ),
-            borderRadius: BorderRadius.all(Radius.circular(8.0))
+            borderRadius: BorderRadius.all(Radius.circular(12.0))
           ),
           focusedErrorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                   color: Colors.red, width: 1
               ),
-              borderRadius: BorderRadius.all(Radius.circular(8.0))
+              borderRadius: BorderRadius.all(Radius.circular(12.0))
           ),
           contentPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12)
         ),
@@ -83,7 +83,7 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
             padding: const EdgeInsets.all(8.0),
             elevation: 2,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0)
+              borderRadius: BorderRadius.circular(12.0)
             ),
             foregroundColor: Colors.white,
             fixedSize: Size(
