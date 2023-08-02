@@ -56,16 +56,18 @@ class _LoginScreenState extends State<LoginScreen> {
       _emailTEController.clear();
       _passwordTEController.clear();
 
-      FocusScope.of(context).unfocus();
+      if(mounted) {
+        FocusScope.of(context).unfocus();
 
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Login Successful!'),
-        backgroundColor: mainColor,
-      ));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Login Successful!'),
+          backgroundColor: mainColor,
+        ));
 
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => const BottomNavBase()),
-              (route) => false);
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => const BottomNavBase()),
+                (route) => false);
+      }
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -170,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         child: Text('Forgot Password?',
           style: TextStyle(
-              color: Colors.black.withOpacity(0.5)
+              color: Colors.black.withOpacity(0.35)
           ),
         ),
       ),

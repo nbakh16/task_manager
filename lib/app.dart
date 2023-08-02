@@ -23,7 +23,15 @@ class TaskManagerApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.white,
         ),
-        textTheme: GoogleFonts.nunitoTextTheme(),
+        textTheme: GoogleFonts.nunitoTextTheme(
+          const TextTheme(
+            labelLarge:  TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1
+              )
+            ),
+        ),
         primaryTextTheme: TextTheme(
           titleLarge: GoogleFonts.oswald(
             textStyle: TextStyle(
@@ -40,7 +48,7 @@ class TaskManagerApp extends StatelessWidget {
               color: Colors.black.withOpacity(0.5),
               letterSpacing: 0.5
             )
-          )
+          ),
         ),
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
