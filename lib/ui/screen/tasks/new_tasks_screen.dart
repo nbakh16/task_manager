@@ -36,20 +36,24 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
     newTasksList.clear();
     final NetworkResponse response = await NetworkCaller().getRequest(Urls.newTasksListUrl);
 
-    _isLoading = false;
-    if(mounted) {
-      setState(() {});
-    }
-
-    if(response.isSuccess) {
+    if(response.isSuccess && mounted) {
       Map<String, dynamic> decodedResponse = jsonDecode(jsonEncode(response.body));
       for(var e in decodedResponse['data']) {
         newTasksList.add(
             Task.fromJson(e)
         );
       }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Tasks list failed!'),
+        backgroundColor: Colors.red,
+      ));
     }
-    print(newTasksList.length);
+
+    _isLoading = false;
+    if(mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -66,7 +70,10 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
             summaryRow(),
             Visibility(
               visible: _isLoading == false,
-              replacement: const Center(child: CircularProgressIndicator()),
+              replacement: const Padding(
+                padding: EdgeInsets.only(top: 14.0),
+                child: LinearProgressIndicator(),
+              ),
               child: Visibility(
                 visible: newTasksList.isNotEmpty,
                 replacement: noTaskAvailable(context),
@@ -79,19 +86,22 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
     );
   }
 
-  Column noTaskAvailable(BuildContext context) {
-    return Column(
-      children: [
-        Icon(
-          Icons.info_outline,
-          size: MediaQuery.sizeOf(context).width * 0.25,
-          color: mainColor.shade300,
-        ),
-        const Padding(
-          padding: EdgeInsets.only(top: 12.0),
-          child: Text('Not New Task'),
-        )
-      ],
+  Padding noTaskAvailable(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 56.0),
+      child: Column(
+        children: [
+          Icon(
+            Icons.info_outline,
+            size: MediaQuery.sizeOf(context).width * 0.25,
+            color: mainColor.shade300,
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 12.0),
+            child: Text('Not New Task'),
+          )
+        ],
+      ),
     );
   }
 
