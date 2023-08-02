@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
+import 'package:task_manager/data/utils/task_status.dart';
 
 import '../../data/utils/urls.dart';
 import '../utils/assets_utils.dart';
@@ -37,7 +38,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
     Map<String, dynamic> requestBody = {
       "title":_titleTEController.text.trim(),
       "description":_descriptionTEController.text.trim(),
-      "status":"New"
+      "status":TaskStatus.newTask
     };
     final NetworkResponse response =
         await NetworkCaller().postRequest(Urls.createTaskUrl, requestBody);

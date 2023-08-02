@@ -15,6 +15,9 @@ class NetworkCaller {
         headers: {'token' : AuthUtility.userInfo.token.toString()}
       );
 
+      log(response.statusCode.toString());
+      log(response.body);
+
       if(response.statusCode == 200) {
         return NetworkResponse(true, response.statusCode, jsonDecode(response.body));
       } else {
@@ -60,7 +63,7 @@ class NetworkCaller {
     await AuthUtility.clearUserInfo();
 
     Navigator.pushAndRemoveUntil(
-        TaskManagerApp.globalKey.currentState!.context,
+        TaskManagerApp.globalKey.currentContext!,
         MaterialPageRoute(builder: (context) => const SplashScreen()), (
         route) => false);
   }
