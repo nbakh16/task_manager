@@ -32,7 +32,7 @@ class NetworkCaller {
         Uri.parse(url),
         headers: {
           'Content-Type' : 'application/json',
-          // 'token' : AuthUtility.userInfo.token.toString()
+          'token' : AuthUtility.userInfo.token.toString()
         },
         body: jsonEncode(body)
       );

@@ -4,7 +4,10 @@ import 'package:task_manager/ui/utils/colors.dart';
 class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
+    required this.title, required this.description, required this.date, required this.status,
   });
+
+  final String title, description, date, status;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,7 @@ class TaskCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: ListTile(
-            title: Text('Task Title which is very very large and long than you can think of',
+            title: Text(title,
               style: Theme.of(context).primaryTextTheme.titleLarge?.copyWith(
                   fontSize: 18
               ),
@@ -26,14 +29,14 @@ class TaskCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 8),
-                Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                Text(description,
                   style: Theme.of(context).primaryTextTheme.titleSmall,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.justify,
                 ),
                 const SizedBox(height: 8),
-                Text('Date: 20/02/2022',
+                Text(date,
                     style: Theme.of(context).primaryTextTheme.titleSmall?.copyWith(
                         color: Colors.black
                     )
@@ -43,8 +46,8 @@ class TaskCard extends StatelessWidget {
                     Chip(
                       label: SizedBox(
                         width: MediaQuery.sizeOf(context).width * 0.20,
-                        child: const Center(child: Text('New',
-                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        child: Center(child: Text(status,
+                          style: const TextStyle(color: Colors.white, fontSize: 14),
                         ))
                       ),
                       backgroundColor: Colors.blue,

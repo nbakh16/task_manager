@@ -6,6 +6,7 @@ import '../../data/utils/urls.dart';
 import '../utils/assets_utils.dart';
 import '../utils/colors.dart';
 import '../widgets/screen_background.dart';
+import 'bottom_nav_base.dart';
 
 class CreateTaskScreen extends StatefulWidget {
   const CreateTaskScreen({super.key});
@@ -55,9 +56,9 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
         backgroundColor: newTaskColor,
       ));
 
-      // Navigator.pushAndRemoveUntil(context,
-      //     MaterialPageRoute(builder: (context) => const BottomNavBase()),
-      //         (route) => false);
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) => const BottomNavBase()),
+              (route) => false);
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
