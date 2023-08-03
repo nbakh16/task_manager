@@ -17,5 +17,6 @@ class Urls {
 
   static String recoveryEmailUrl = '$_baseUrl/RecoverVerifyEmail/'; //email address
   static String recoveryOTPUrl = '$_baseUrl/RecoverVerifyOTP/'; //email address // otp
+  static String setPasswordUrl = '$_baseUrl/RecoverResetPass';
 
 }

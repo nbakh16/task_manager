@@ -52,18 +52,20 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       Map<String, dynamic> decodedResponse = jsonDecode(jsonEncode(response.body));
       if(response.isSuccess) {
         if(decodedResponse['status'] == 'success') {
-          _pinCodeTEController.clear();
 
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Set new password'),
             backgroundColor: mainColor,
           ));
 
-          Navigator.push(
+          Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (context) => const SetPasswordScreen()
-              ));
+                builder: (context) => SetPasswordScreen(
+                    emailAddress: widget.emailAddress,
+                    otpCode: _pinCodeTEController.text,
+                  )), (route) => false,
+          );
         }
         else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
