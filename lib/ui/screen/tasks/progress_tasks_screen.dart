@@ -74,7 +74,7 @@ class _ProgressTasksScreenState extends State<ProgressTasksScreen> {
               replacement: const Center(child: CircularProgressIndicator(),),
               child: Visibility(
                   visible: progressTasksList.isNotEmpty,
-                  replacement: const NoTaskAvailable(),
+                  replacement: const Center(child: NoTaskAvailable()),
                   child: TasksListViewBuilder(
                     tasksList: progressTasksList,
                     chipColor: progressTaskColor,
