@@ -13,4 +13,9 @@ class Urls {
   static String completedTasksListUrl = '$_baseUrl/listTaskByStatus/Completed';
   static String progressTasksListUrl = '$_baseUrl/listTaskByStatus/Progress';
   static String cancelledTasksListUrl = '$_baseUrl/listTaskByStatus/Cancelled';
+
+
+  static String recoveryEmailUrl = '$_baseUrl/RecoverVerifyEmail/'; //email address
+  static String recoveryOTPUrl = '$_baseUrl/RecoverVerifyOTP/'; //email address // otp
+
 }

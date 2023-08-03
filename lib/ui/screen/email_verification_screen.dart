@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/network_response.dart';
+import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/ui/screen/pin_verification_screen.dart';
 
 import '../../data/utils/assets_utils.dart';
+import '../../data/utils/colors.dart';
+import '../../data/utils/urls.dart';
 import '../widgets/screen_background.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
@@ -11,9 +17,61 @@ class EmailVerificationScreen extends StatefulWidget {
   State<EmailVerificationScreen> createState() => _EmailVerificationScreenState();
 }
 
-TextEditingController _emailTEController = TextEditingController();
-
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+  bool _isLoading = false;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _emailTEController = TextEditingController();
+
+  Future<void> sendPinToEmail() async {
+    if(!_formKey.currentState!.validate()) {
+      return;
+    }
+    FocusScope.of(context).unfocus();
+
+    _isLoading = true;
+    if(mounted) {
+      setState(() {});
+    }
+
+    final String responseUrl = Urls.recoveryEmailUrl + _emailTEController.text;
+    final NetworkResponse response = await NetworkCaller().getRequest(responseUrl);
+
+    Map<String, dynamic> decodedResponse = jsonDecode(jsonEncode(response.body));
+
+    _isLoading = false;
+    if(mounted) {
+      setState(() {});
+    }
+
+    if(response.isSuccess && mounted) {
+      if(decodedResponse['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Verification mail sent. Kindly check your email.'),
+          backgroundColor: mainColor,
+        ));
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PinVerificationScreen(emailAddress: _emailTEController.text)
+            ));
+      }
+      else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('User not found!'),
+          backgroundColor: Colors.red,
+        ));
+      }
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed sending email!'),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,24 +89,33 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                 style: Theme.of(context).primaryTextTheme.titleSmall,
               ),
               const SizedBox(height: 16,),
-              TextFormField(
-                controller: _emailTEController,
-                decoration: const InputDecoration(
-                    hintText: 'Email',
-                    labelText: 'Email'
+              Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: _emailTEController,
+                  decoration: const InputDecoration(
+                      hintText: 'Email',
+                      labelText: 'Email'
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.done,
+                  validator: (String? value) {
+                    if(value?.isEmpty ?? true) {
+                      return 'Please enter Email!';
+                    }
+                    return null;
+                  },
+                  onEditingComplete: sendPinToEmail,
                 ),
-                keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16,),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PinVerificationScreen()
-                      ));
-                  },
-                  child: Image.asset(AssetsUtils.forwardPNG,),
+              Visibility(
+                visible: _isLoading == false,
+                replacement: const Center(child: CircularProgressIndicator(),),
+                child: ElevatedButton(
+                    onPressed: sendPinToEmail,
+                    child: Image.asset(AssetsUtils.forwardPNG,),
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
