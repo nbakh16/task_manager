@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
-import 'package:task_manager/ui/screen/bottom_nav_base.dart';
 import 'package:task_manager/data/utils/colors.dart';
+import 'package:task_manager/ui/screen/login_screen.dart';
 
 import '../../data/models/login_model.dart';
 import '../../data/utils/urls.dart';
@@ -70,13 +70,13 @@ class _SignupScreenState extends State<SignupScreen> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sign up successful!'),
         backgroundColor: mainColor,));
 
-      LoginModel loginModel = LoginModel.fromJson(response.body!);
-      await AuthUtility.saveUserInfo(loginModel);
+      // LoginModel loginModel = LoginModel.fromJson(response.body!);
+      // await AuthUtility.saveUserInfo(loginModel);
 
       if(mounted) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const BottomNavBase()),
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
                 (route) => false
         );
       }
@@ -90,6 +90,12 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _emailTEController.text = 'testing.signup@email.com';
+    _firstNameTEController.text = 'Sign';
+    _lastNameTEController.text = 'Up';
+    _mobileTEController.text = '11111111111';
+    _passwordTEController.text = '12345678';
+
     return Scaffold(
         body: ScreenBackground(
           child: Form(

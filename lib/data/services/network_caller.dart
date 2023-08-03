@@ -29,7 +29,7 @@ class NetworkCaller {
     return NetworkResponse(false, -1, null);
   }
 
-  Future<NetworkResponse> postRequest(String url, Map<String, dynamic> body) async {
+  Future<NetworkResponse> postRequest(String url, Map<String, dynamic> body, {bool onLoginScreen = false}) async {
     try {
       Response response = await post(
         Uri.parse(url),
@@ -47,7 +47,7 @@ class NetworkCaller {
         return NetworkResponse(true, response.statusCode, jsonDecode(response.body));
       }
       else if(response.statusCode == 401) {
-        signOut();
+        if(!onLoginScreen) signOut();
       }
       else {
         return NetworkResponse(false, response.statusCode, null);
