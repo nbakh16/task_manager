@@ -6,14 +6,14 @@ import 'package:task_manager/ui/screen/tasks/canceled_tasks_screen.dart';
 import 'package:task_manager/ui/screen/tasks/completed_tasks_screen.dart';
 import 'package:task_manager/ui/screen/tasks/new_tasks_screen.dart';
 import 'package:task_manager/ui/screen/tasks/progress_tasks_screen.dart';
-import 'package:task_manager/ui/utils/colors.dart';
+import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/widgets/custom_aler_dialog.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utils/task_status.dart';
 import '../../data/utils/urls.dart';
-import '../utils/assets_utils.dart';
+import '../../data/utils/assets_utils.dart';
 
 class BottomNavBase extends StatefulWidget {
   const BottomNavBase({super.key});
@@ -27,9 +27,9 @@ class _BottomNavBaseState extends State<BottomNavBase> {
 
   final List<Widget> _screens = const [
     NewTasksScreen(),
-    CompletedTasksScreen(),
+    ProgressTasksScreen(),
     CanceledTasksScreen(),
-    ProgressTasksScreen()
+    CompletedTasksScreen(),
   ];
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -115,9 +115,9 @@ class _BottomNavBaseState extends State<BottomNavBase> {
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.filter_1), label: 'New Task'),
-          BottomNavigationBarItem(icon: Icon(Icons.filter_2), label: 'Completed'),
+          BottomNavigationBarItem(icon: Icon(Icons.filter_2), label: 'Progress'),
           BottomNavigationBarItem(icon: Icon(Icons.filter_3), label: 'Canceled'),
-          BottomNavigationBarItem(icon: Icon(Icons.filter_4), label: 'Progress'),
+          BottomNavigationBarItem(icon: Icon(Icons.filter_4), label: 'Completed'),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -125,13 +125,13 @@ class _BottomNavBaseState extends State<BottomNavBase> {
         //   Navigator.push(context,
         //       MaterialPageRoute(builder: (context) => const CreateTaskScreen()));
         // },
-        onPressed: addTaskModalBottomSheet,
+        onPressed: createTaskModalBottomSheet,
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  void addTaskModalBottomSheet() {
+  void createTaskModalBottomSheet() {
     showModalBottomSheet(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(

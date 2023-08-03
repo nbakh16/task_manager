@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/utils/colors.dart';
+import 'package:task_manager/data/utils/colors.dart';
 
 class TaskCard extends StatelessWidget {
   const TaskCard({
@@ -10,10 +10,12 @@ class TaskCard extends StatelessWidget {
     required this.status,
     required this.onEdit,
     required this.onDelete,
+    this.chipColor,
   });
 
   final String title, description, date, status;
   final Function() onEdit, onDelete;
+  final Color? chipColor;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +58,7 @@ class TaskCard extends StatelessWidget {
                           style: const TextStyle(color: Colors.white, fontSize: 14),
                         ))
                       ),
-                      backgroundColor: Colors.blue,
+                      backgroundColor: chipColor,
                     ),
                     const Spacer(),
                     IconButton(

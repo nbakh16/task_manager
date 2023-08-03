@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/models/task_status_count_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
-import 'package:task_manager/ui/utils/colors.dart';
+import 'package:task_manager/data/utils/colors.dart';
 
 import '../../../data/models/task_model.dart';
 import '../../../data/utils/task_status.dart';
 import '../../../data/utils/urls.dart';
 import '../../widgets/custom_aler_dialog.dart';
+import '../../widgets/no_task_available_widget.dart';
 import '../../widgets/summary_card.dart';
-import '../../widgets/task_card.dart';
+import '../../widgets/tasks_listview_builder.dart';
 
 class NewTasksScreen extends StatefulWidget {
   const NewTasksScreen({super.key});
@@ -115,47 +116,52 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: mainColor.shade50,
-      body: Padding(
-        padding: EdgeInsets.all(MediaQuery.sizeOf(context).width * 0.02),
-        child: Visibility(
-          visible: _isLoading == false,
-          replacement: const Center(child: CircularProgressIndicator(),),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              summaryRow(),
-              Visibility(
-                visible: newTasksList.isNotEmpty,
-                replacement: noTaskAvailable(context),
-                child: tasksListViewBuilder()
-              )
-            ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          getTaskStatusCount();
+          getNewTasksList();
+        },
+        child: Padding(
+          padding: EdgeInsets.all(MediaQuery.sizeOf(context).width * 0.02),
+          child: Visibility(
+            visible: _isLoading == false,
+            replacement: const Center(child: CircularProgressIndicator(),),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                summaryRow(),
+                Visibility(
+                  visible: newTasksList.isNotEmpty,
+                  replacement: const NoTaskAvailable(),
+                  child: Expanded(
+                    child: TasksListViewBuilder(
+                      tasksList: newTasksList,
+                      chipColor: newTaskColor,
+                      onEdit: (index){
+                        print(index);
+                      },
+                      onDelete: (index) async {
+                        showDialog(barrierDismissible: false,
+                            context: context, builder: (_) => CustomAlertDialog(
+                                onPress: () => deleteTask(newTasksList[index].sId ?? ''),
+                                title: 'Delete Task',
+                                content: 'Deleting task "${newTasksList[index].title}"',
+                                actionText: 'Confirm'
+                            ));
+                      },
+                    ),
+                  )
+                )
+              ],
+            ),
           ),
         ),
       )
     );
   }
 
-  Padding noTaskAvailable(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 56.0),
-      child: Column(
-        children: [
-          Icon(
-            Icons.info_outline,
-            size: MediaQuery.sizeOf(context).width * 0.25,
-            color: mainColor.shade300,
-          ),
-          const Padding(
-            padding: EdgeInsets.only(top: 12.0),
-            child: Text('No New Task'),
-          )
-        ],
-      ),
-    );
-  }
 
   Row summaryRow() {
     return Row(
@@ -177,42 +183,6 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
           taskType: 'Completed',
         ),
       ],
-    );
-  }
-
-  Expanded tasksListViewBuilder() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 14.0),
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 60.0),
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              itemCount: newTasksList.length,
-              itemBuilder: (context, index) {
-                return TaskCard(
-                  title: newTasksList[index].title ?? '',
-                  description: newTasksList[index].description ?? '',
-                  date: newTasksList[index].createdDate ?? '',
-                  status: newTasksList[index].status ?? '',
-                  onEdit: (){},
-                  onDelete: () async {
-                    showDialog(barrierDismissible: false,
-                        context: context, builder: (_) => CustomAlertDialog(
-                            onPress: () => deleteTask(newTasksList[index].sId ?? ''),
-                            title: 'Delete Task',
-                            content: 'Deleting task "${newTasksList[index].title}"',
-                            actionText: 'Confirm'
-                        ));
-                  },
-                );
-              }),
-          ),
-        ),
-      ),
     );
   }
 

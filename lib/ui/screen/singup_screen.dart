@@ -5,11 +5,11 @@ import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
 import 'package:task_manager/ui/screen/bottom_nav_base.dart';
-import 'package:task_manager/ui/utils/colors.dart';
+import 'package:task_manager/data/utils/colors.dart';
 
 import '../../data/models/login_model.dart';
 import '../../data/utils/urls.dart';
-import '../utils/assets_utils.dart';
+import '../../data/utils/assets_utils.dart';
 import '../widgets/screen_background.dart';
 
 class SignupScreen extends StatefulWidget {

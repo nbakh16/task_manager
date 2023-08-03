@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../utils/assets_utils.dart';
+import '../../data/utils/assets_utils.dart';
 
 
 class ScreenBackground extends StatelessWidget {

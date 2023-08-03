@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screen/pin_verification_screen.dart';
 
-import '../utils/assets_utils.dart';
+import '../../data/utils/assets_utils.dart';
 import '../widgets/screen_background.dart';
 
 class EmailVerificationScreen extends StatefulWidget {

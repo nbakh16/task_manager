@@ -4,8 +4,8 @@ import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/task_status.dart';
 
 import '../../data/utils/urls.dart';
-import '../utils/assets_utils.dart';
-import '../utils/colors.dart';
+import '../../data/utils/assets_utils.dart';
+import '../../data/utils/colors.dart';
 import '../widgets/screen_background.dart';
 import 'bottom_nav_base.dart';
 
