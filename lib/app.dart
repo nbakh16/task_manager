@@ -91,6 +91,10 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
               MediaQuery.sizeOf(context).height * 0.05),
           ),
         ),
+        iconTheme: IconThemeData(
+          color: mainColor.shade300,
+          size: 30
+        ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           elevation: 3,
           focusElevation: 6,

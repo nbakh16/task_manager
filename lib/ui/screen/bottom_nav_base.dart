@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
 import 'package:task_manager/ui/screen/create_task_screen.dart';
+import 'package:task_manager/ui/screen/profile_screen.dart';
 import 'package:task_manager/ui/screen/splash_screen.dart';
 import 'package:task_manager/ui/screen/tasks/canceled_tasks_screen.dart';
 import 'package:task_manager/ui/screen/tasks/completed_tasks_screen.dart';
 import 'package:task_manager/ui/screen/tasks/new_tasks_screen.dart';
 import 'package:task_manager/ui/screen/tasks/progress_tasks_screen.dart';
 import 'package:task_manager/data/utils/colors.dart';
-import 'package:task_manager/ui/widgets/custom_aler_dialog.dart';
+import 'package:task_manager/ui/widgets/custom_alert_dialog.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
@@ -88,8 +89,8 @@ class _BottomNavBaseState extends State<BottomNavBase> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: appBarTitle(context),
-        leading: profilePicture(context),
+        title: profileSummary(context),
+        // leading: profilePicture(context),
         actions: [
           IconButton(
             onPressed: () {
@@ -127,6 +128,23 @@ class _BottomNavBaseState extends State<BottomNavBase> {
         // },
         onPressed: createTaskModalBottomSheet,
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  InkWell profileSummary(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ProfileScreen()));
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          profilePicture(context),
+          const SizedBox(width: 6.0,),
+          appBarTitle(context),
+        ],
       ),
     );
   }

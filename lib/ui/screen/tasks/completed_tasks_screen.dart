@@ -7,7 +7,7 @@ import '../../../data/models/task_model.dart';
 import '../../../data/services/network_caller.dart';
 import '../../../data/utils/colors.dart';
 import '../../../data/utils/urls.dart';
-import '../../widgets/custom_aler_dialog.dart';
+import '../../widgets/custom_alert_dialog.dart';
 import '../../widgets/no_task_available_widget.dart';
 import '../../widgets/tasks_listview_builder.dart';
 

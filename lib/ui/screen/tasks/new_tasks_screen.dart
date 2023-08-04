@@ -9,7 +9,7 @@ import 'package:task_manager/data/utils/colors.dart';
 import '../../../data/models/task_model.dart';
 import '../../../data/utils/task_status.dart';
 import '../../../data/utils/urls.dart';
-import '../../widgets/custom_aler_dialog.dart';
+import '../../widgets/custom_alert_dialog.dart';
 import '../../widgets/no_task_available_widget.dart';
 import '../../widgets/summary_card.dart';
 import '../../widgets/tasks_listview_builder.dart';
