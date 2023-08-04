@@ -19,4 +19,6 @@ class Urls {
   static String recoveryOTPUrl = '$_baseUrl/RecoverVerifyOTP/'; //email address // otp
   static String setPasswordUrl = '$_baseUrl/RecoverResetPass';
 
+  static String profileUpdateUrl = '$_baseUrl/profileUpdate';
+
 }

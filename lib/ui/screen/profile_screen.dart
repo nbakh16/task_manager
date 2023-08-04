@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
 
+import '../../data/models/login_model.dart';
+import '../../data/models/network_response.dart';
+import '../../data/services/network_caller.dart';
+import '../../data/utils/colors.dart';
+import '../../data/utils/urls.dart';
 import '../widgets/screen_background.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -18,6 +23,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _firstNameTEController = TextEditingController();
   final TextEditingController _lastNameTEController = TextEditingController();
   final TextEditingController _mobileTEController = TextEditingController();
+
+  Future<void> updateProfile() async {
+    if(!_formKey.currentState!.validate()) {
+      return;
+    }
+    FocusScope.of(context).unfocus();
+
+    _isLoading = true;
+    if(mounted) {
+      setState(() {});
+    }
+
+    Map<String, dynamic> requestBody = {
+      // "email": "test@email.com",
+      "firstName": _firstNameTEController.text.trim(),
+      "lastName": _lastNameTEController.text.trim(),
+      "mobile": _mobileTEController.text.trim(),
+      // "photo": "https://images.unsplash.com/photo-1634926878768-2a5b3c42f139"
+    };
+    final NetworkResponse response = await NetworkCaller().postRequest(Urls.profileUpdateUrl, requestBody);
+
+    _isLoading = false;
+    if(mounted) {
+      setState(() {});
+    }
+
+    if(response.isSuccess && mounted) {
+      LoginModel loginModel = LoginModel.fromJson(response.body!);
+      await AuthUtility.saveUserInfo(loginModel);
+
+      if(mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Profile updated!'),
+          backgroundColor: mainColor,
+        ));
+      }
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to update profile!'),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     bottom: 16,
                     child: IconButton(
                       onPressed: () {
-                        print('hey');
+                        // TODO: Image upload
                       },
                       icon: const Icon(Icons.add_a_photo)
                     ),
@@ -121,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     labelText: 'Mobile'
                 ),
                 keyboardType: TextInputType.phone,
-                textInputAction: TextInputAction.next,
+                textInputAction: TextInputAction.done,
                 validator: (String? value) {
                   if(value?.isEmpty ?? true) {
                     return 'Please enter your Mobile Number!';
@@ -131,13 +180,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   }
                   return null;
                 },
+                onEditingComplete: updateProfile,
               ),
               const SizedBox(height: 16,),
               Visibility(
                 visible: _isLoading == false,
                 replacement: const Center(child: CircularProgressIndicator()),
                 child: ElevatedButton(
-                  onPressed: (){},
+                  onPressed: updateProfile,
                   child: const Text('Update'),
                 ),
               ),

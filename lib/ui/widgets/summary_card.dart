@@ -29,10 +29,13 @@ class SummaryCard extends StatelessWidget {
                   fontSize: 20
                 )
               ),
-              Text(taskType,
-                style: Theme.of(context).primaryTextTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w500
-                )
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(taskType,
+                  style: Theme.of(context).primaryTextTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w500
+                  )
+                ),
               ),
             ],
           ),
