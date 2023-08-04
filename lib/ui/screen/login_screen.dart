@@ -78,10 +78,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: remove pre-fill
-    _emailTEController.text = 'test@email.com';
-    _passwordTEController.text = '12345678';
-
     return Scaffold(
       body: ScreenBackground(
         child: Form(

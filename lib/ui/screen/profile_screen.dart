@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:task_manager/data/utils/auth_utility.dart';
+import 'dart:io';
 
-import '../../data/models/login_model.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:task_manager/data/utils/auth_utility.dart';
 import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utils/colors.dart';
@@ -24,6 +26,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _lastNameTEController = TextEditingController();
   final TextEditingController _mobileTEController = TextEditingController();
 
+  File? image;
+  Future pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+
+      final imageTemp = File(image.path);
+      this.image = imageTemp;
+      setState(() {});
+    } on PlatformException catch(e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error: $e'),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
   Future<void> updateProfile() async {
     if(!_formKey.currentState!.validate()) {
       return;
@@ -36,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     Map<String, dynamic> requestBody = {
-      // "email": "test@email.com",
+      "email": AuthUtility.userInfo.data!.email,
       "firstName": _firstNameTEController.text.trim(),
       "lastName": _lastNameTEController.text.trim(),
       "mobile": _mobileTEController.text.trim(),
@@ -50,8 +69,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     if(response.isSuccess && mounted) {
-      LoginModel loginModel = LoginModel.fromJson(response.body!);
-      await AuthUtility.saveUserInfo(loginModel);
+      // LoginModel loginModel = LoginModel.fromJson(response.body!);
+      // await AuthUtility.saveUserInfo(loginModel);
 
       if(mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -66,6 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.red,
       ));
     }
+    await AuthUtility.getUserInfo();
   }
 
   @override
@@ -92,7 +112,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: CircleAvatar(
                         minRadius: 35,
                         maxRadius: 55,
-                        foregroundImage: NetworkImage(AuthUtility.userInfo.data?.photo ?? ''),
+                        foregroundImage: image != null
+                            ? FileImage(image!)
+                            : NetworkImage(AuthUtility.userInfo.data?.photo ?? '') as ImageProvider,
+                        // foregroundImage: NetworkImage(AuthUtility.userInfo.data?.photo ?? ''),
                         // foregroundImage: NetworkImage('https://images.unsplash.com/photo-1575936123452-b67c3203c357'),
                         onForegroundImageError: (_, __) {
                           return;
@@ -106,10 +129,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Positioned(
                     bottom: 16,
                     child: IconButton(
-                      onPressed: () {
-                        // TODO: Image upload
-                      },
-                      icon: const Icon(Icons.add_a_photo)
+                      onPressed: pickImage,
+                      icon: const CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Icon(Icons.add_a_photo))
                     ),
                   )
                 ],

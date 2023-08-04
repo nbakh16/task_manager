@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_manager/ui/screen/splash_screen.dart';
 import 'package:task_manager/data/utils/colors.dart';
@@ -29,6 +30,11 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
         ),
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.white,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarIconBrightness: Brightness.light,
+            systemNavigationBarColor: mainColor,
+            systemNavigationBarIconBrightness: Brightness.dark
+          )
         ),
         textTheme: GoogleFonts.nunitoTextTheme(
           const TextTheme(

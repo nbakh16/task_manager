@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screen/login_screen.dart';
 
@@ -145,11 +143,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                   visible: _isLoading == false,
                   replacement: const Center(child: CircularProgressIndicator(),),
                   child: ElevatedButton(
-                    onPressed: (){
-                      log(
-                        'email: ${widget.emailAddress}, otp: ${widget.otpCode}, pass: ${_confirmPasswordTEController.text}'
-                      );
-                    },
+                    onPressed: postNewPassword,
                     child: const Text('Confirm'),
                   ),
                 ),
