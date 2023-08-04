@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../data/utils/colors.dart';
 
-class NoTaskAvailable extends StatelessWidget {
-  const NoTaskAvailable({
+class NoTaskAvailableWarning extends StatelessWidget {
+  const NoTaskAvailableWarning({
     super.key,
   });
 

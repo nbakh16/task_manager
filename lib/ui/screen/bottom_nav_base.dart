@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
-import 'package:task_manager/ui/screen/create_task_screen.dart';
+import 'package:task_manager/data/utils/tasks_screen_info.dart';
 import 'package:task_manager/ui/screen/profile_screen.dart';
 import 'package:task_manager/ui/screen/splash_screen.dart';
-import 'package:task_manager/ui/screen/tasks/canceled_tasks_screen.dart';
-import 'package:task_manager/ui/screen/tasks/completed_tasks_screen.dart';
-import 'package:task_manager/ui/screen/tasks/new_tasks_screen.dart';
-import 'package:task_manager/ui/screen/tasks/progress_tasks_screen.dart';
+import 'package:task_manager/ui/screen/tasks_screen.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/widgets/custom_alert_dialog.dart';
 
@@ -25,14 +22,8 @@ class BottomNavBase extends StatefulWidget {
 }
 
 class _BottomNavBaseState extends State<BottomNavBase> {
+  final PageController _pageController = PageController();
   int _selectedIndex = 0;
-
-  final List<Widget> _screens = const [
-    NewTasksScreen(),
-    ProgressTasksScreen(),
-    CanceledTasksScreen(),
-    CompletedTasksScreen(),
-  ];
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -101,7 +92,32 @@ class _BottomNavBaseState extends State<BottomNavBase> {
           )
         ],
       ),
-      body: _screens[_selectedIndex],
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        children: [
+          TasksScreen(TasksScreenInfo(
+              responseUrl: Urls.newTasksListUrl,
+              taskStatus: TaskStatus.newTask,
+              chipColor: newTaskColor)),
+          TasksScreen(TasksScreenInfo(
+              responseUrl: Urls.progressTasksListUrl,
+              taskStatus: TaskStatus.progressTask,
+              chipColor: progressTaskColor)),
+          TasksScreen(TasksScreenInfo(
+              responseUrl: Urls.canceledTasksListUrl,
+              taskStatus: TaskStatus.canceledTask,
+              chipColor: canceledTaskColor)),
+          TasksScreen(TasksScreenInfo(
+              responseUrl: Urls.completedTasksListUrl,
+              taskStatus: TaskStatus.completedTask,
+              chipColor: completedTaskColor)),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         elevation: 8,
         currentIndex: _selectedIndex,
@@ -110,10 +126,14 @@ class _BottomNavBaseState extends State<BottomNavBase> {
         showUnselectedLabels: true,
         type: BottomNavigationBarType.shifting,
         onTap: (int index) {
-          _selectedIndex = index;
-          if(mounted) {
-            setState(() {});
-          }
+          setState(() {
+            _selectedIndex = index;
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.ease,
+            );
+          });
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.filter_1), label: 'New Task'),
@@ -268,13 +288,25 @@ class _BottomNavBaseState extends State<BottomNavBase> {
   }
 
   Future<dynamic> signOutShowDialog(BuildContext context) {
-    return showDialog(barrierDismissible: false,
-      context: context, builder: (_) => CustomAlertDialog(
-        onPress: signOut,
-        title: 'Sign Out',
-        content: 'Are you sure to sign out? You will be redirected to login page.',
-        actionText: 'Sign Out'
-    ));
+    return showGeneralDialog(
+      barrierDismissible: false,
+      context: context,
+      pageBuilder: (_, __, ___) {
+        return Container();
+      },
+      transitionBuilder: (_, anim, __, ___) {
+        return Transform.scale(
+          scale: Curves.easeInOut.transform(anim.value),
+          child: CustomAlertDialog(
+              onPress: signOut,
+              title: 'Sign Out',
+              content: 'Are you sure to sign out? You will be redirected to login page.',
+              actionText: 'Sign Out'
+          ),
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 300),
+    );
   }
 
   Future<void> signOut() async{

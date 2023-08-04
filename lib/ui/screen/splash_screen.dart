@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // navigateToNextPage();
+    navigateToNextPage();
   }
 
   void navigateToNextPage() {
@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
           alignment: Alignment.center,
           children: [
             Opacity(
-              opacity: 0,
+              opacity: 0.1,
               child: SvgPicture.asset(AssetsUtils.ostadLogoSVG,
                 width: MediaQuery.sizeOf(context).width * 0.85,
                 fit: BoxFit.scaleDown,

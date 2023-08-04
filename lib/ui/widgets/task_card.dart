@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/utils/colors.dart';
 
+import '../../data/models/task_model.dart';
+
 class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
-    required this.title,
-    required this.description,
-    required this.date,
-    required this.status,
+    required this.taskData,
     required this.onEdit,
     required this.onDelete,
     this.chipColor,
   });
 
-  final String title, description, date, status;
+  final TaskData taskData;
   final Function() onEdit, onDelete;
   final Color? chipColor;
 
@@ -22,11 +21,14 @@ class TaskCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 4.0),
       child: Card(
-        elevation: 1,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0)
+        ),
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: ListTile(
-            title: Text(title,
+            title: Text(taskData.title ?? 'No Title',
               style: Theme.of(context).primaryTextTheme.titleLarge?.copyWith(
                   fontSize: 18
               ),
@@ -37,14 +39,14 @@ class TaskCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 8),
-                Text(description,
+                Text(taskData.description ?? '',
                   style: Theme.of(context).primaryTextTheme.titleSmall,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.justify,
                 ),
                 const SizedBox(height: 8),
-                Text(date,
+                Text(taskData.createdDate ?? '',
                     style: Theme.of(context).primaryTextTheme.titleSmall?.copyWith(
                         color: Colors.black
                     )
@@ -54,7 +56,7 @@ class TaskCard extends StatelessWidget {
                     Chip(
                       label: SizedBox(
                         width: MediaQuery.sizeOf(context).width * 0.20,
-                        child: Center(child: Text(status,
+                        child: Center(child: Text(taskData.status ?? 'New',
                           style: const TextStyle(color: Colors.white, fontSize: 14),
                         ))
                       ),
