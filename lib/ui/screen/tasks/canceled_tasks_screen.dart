@@ -8,6 +8,7 @@ import '../../../data/services/network_caller.dart';
 import '../../../data/utils/colors.dart';
 import '../../../data/utils/urls.dart';
 import '../../widgets/custom_alert_dialog.dart';
+import '../../widgets/custom_loading.dart';
 import '../../widgets/no_task_available_widget.dart';
 import '../../widgets/tasks_listview_builder.dart';
 
@@ -71,7 +72,7 @@ class _CanceledTasksScreenState extends State<CanceledTasksScreen> {
             padding: EdgeInsets.all(MediaQuery.sizeOf(context).width * 0.02),
             child: Visibility(
               visible: _isLoading == false,
-              replacement: const Center(child: CircularProgressIndicator(),),
+              replacement: const CustomLoading(),
               child: Visibility(
                   visible: canceledTasksList.isNotEmpty,
                   replacement: const Center(child: NoTaskAvailable()),

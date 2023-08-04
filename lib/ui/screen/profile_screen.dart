@@ -27,9 +27,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _mobileTEController = TextEditingController();
 
   File? image;
-  Future pickImage() async {
+  Future pickImage(ImageSource imageSource) async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final image = await ImagePicker().pickImage(source: imageSource);
       if (image == null) return;
 
       final imageTemp = File(image.path);
@@ -55,11 +55,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     Map<String, dynamic> requestBody = {
-      "email": AuthUtility.userInfo.data!.email,
+      // "email": AuthUtility.userInfo.data!.email,
       "firstName": _firstNameTEController.text.trim(),
       "lastName": _lastNameTEController.text.trim(),
       "mobile": _mobileTEController.text.trim(),
-      // "photo": "https://images.unsplash.com/photo-1634926878768-2a5b3c42f139"
+      "photo": image?.toString().split(' ').last.replaceAll("'", "") ?? AuthUtility.userInfo.data?.photo ?? ""
     };
     final NetworkResponse response = await NetworkCaller().postRequest(Urls.profileUpdateUrl, requestBody);
 
@@ -109,31 +109,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 35),
-                      child: CircleAvatar(
-                        minRadius: 35,
-                        maxRadius: 55,
-                        foregroundImage: image != null
-                            ? FileImage(image!)
-                            : NetworkImage(AuthUtility.userInfo.data?.photo ?? '') as ImageProvider,
-                        // foregroundImage: NetworkImage(AuthUtility.userInfo.data?.photo ?? ''),
-                        // foregroundImage: NetworkImage('https://images.unsplash.com/photo-1575936123452-b67c3203c357'),
-                        onForegroundImageError: (_, __) {
-                          return;
+                      child: InkWell(
+                        onTap: () {
+                          _showBottomSheet(context);
                         },
-                        child: Text('${AuthUtility.userInfo.data?.firstName![0]}',
-                          style: Theme.of(context).primaryTextTheme.titleLarge,
+                        child: CircleAvatar(
+                          minRadius: 35,
+                          maxRadius: 55,
+                          foregroundImage: image != null
+                              ? FileImage(image!)
+                              : NetworkImage(AuthUtility.userInfo.data?.photo ?? '') as ImageProvider,
+                          // foregroundImage: NetworkImage(AuthUtility.userInfo.data?.photo ?? ''),
+                          // foregroundImage: NetworkImage('https://images.unsplash.com/photo-1575936123452-b67c3203c357'),
+                          onForegroundImageError: (_, __) {
+                            return;
+                          },
+                          child: Text('${AuthUtility.userInfo.data?.firstName![0]}',
+                            style: Theme.of(context).primaryTextTheme.titleLarge,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  Positioned(
+                  const Positioned(
                     bottom: 16,
-                    child: IconButton(
-                      onPressed: pickImage,
-                      icon: const CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Icon(Icons.add_a_photo))
-                    ),
+                    child: IgnorePointer(
+                      child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: Icon(Icons.add_a_photo)),
+                    )
                   )
                 ],
               ),
@@ -210,7 +214,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 visible: _isLoading == false,
                 replacement: const Center(child: CircularProgressIndicator()),
                 child: ElevatedButton(
-                  onPressed: updateProfile,
+                  // onPressed: updateProfile,
+                  onPressed: () {
+                    print("'Hello'");
+                    print(image.toString().split(' ').last.replaceAll("'", ""));
+                  },
                   child: const Text('Update'),
                 ),
               ),
@@ -218,6 +226,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       )
+    );
+  }
+
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      barrierColor: mainColor.withOpacity(0.15),
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Choose an action',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.photo_library),
+              title: Text('Gallery'),
+              onTap: () {
+                pickImage(ImageSource.gallery);
+                Navigator.of(context).pop();
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.camera_alt),
+              title: Text('Camera'),
+              onTap: () {
+                pickImage(ImageSource.camera);
+                // Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

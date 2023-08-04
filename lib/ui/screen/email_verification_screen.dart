@@ -8,6 +8,7 @@ import 'package:task_manager/ui/screen/pin_verification_screen.dart';
 import '../../data/utils/assets_utils.dart';
 import '../../data/utils/colors.dart';
 import '../../data/utils/urls.dart';
+import '../widgets/custom_loading.dart';
 import '../widgets/screen_background.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
@@ -111,27 +112,35 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               const SizedBox(height: 16,),
               Visibility(
                 visible: _isLoading == false,
-                replacement: const Center(child: CircularProgressIndicator(),),
-                child: ElevatedButton(
-                    onPressed: sendPinToEmail,
-                    child: Image.asset(AssetsUtils.forwardPNG,),
+                replacement: const CustomLoading(),
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: sendPinToEmail,
+                      child: Image.asset(AssetsUtils.forwardPNG,),
+                    ),
+                    signInButton(context)
+                  ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Have account? "),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Sign In'),
-                  ),
-                ],
-              )
             ],
           ),
         )
+    );
+  }
+
+  Row signInButton(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Have account? "),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Sign In'),
+        ),
+      ],
     );
   }
 }

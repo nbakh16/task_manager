@@ -8,6 +8,7 @@ import '../../../data/services/network_caller.dart';
 import '../../../data/utils/colors.dart';
 import '../../../data/utils/urls.dart';
 import '../../widgets/custom_alert_dialog.dart';
+import '../../widgets/custom_loading.dart';
 import '../../widgets/no_task_available_widget.dart';
 import '../../widgets/tasks_listview_builder.dart';
 
@@ -71,7 +72,7 @@ class _ProgressTasksScreenState extends State<ProgressTasksScreen> {
             padding: EdgeInsets.all(MediaQuery.sizeOf(context).width * 0.02),
             child: Visibility(
               visible: _isLoading == false,
-              replacement: const Center(child: CircularProgressIndicator(),),
+              replacement: const CustomLoading(),
               child: Visibility(
                   visible: progressTasksList.isNotEmpty,
                   replacement: const Center(child: NoTaskAvailable()),

@@ -6,6 +6,7 @@ import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/screen/login_screen.dart';
+import 'package:task_manager/ui/widgets/custom_loading.dart';
 
 import '../../data/models/login_model.dart';
 import '../../data/utils/urls.dart';
@@ -209,7 +210,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(height: 16,),
                 Visibility(
                   visible: _isLoading == false,
-                  replacement: const Center(child: CircularProgressIndicator()),
+                  replacement: const CustomLoading(),
                   child: Column(
                     children: [
                       ElevatedButton(

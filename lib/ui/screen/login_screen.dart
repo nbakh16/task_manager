@@ -6,6 +6,7 @@ import 'package:task_manager/ui/screen/email_verification_screen.dart';
 import 'package:task_manager/ui/screen/singup_screen.dart';
 import 'package:task_manager/data/utils/assets_utils.dart';
 import 'package:task_manager/data/utils/colors.dart';
+import 'package:task_manager/ui/widgets/custom_loading.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 import '../../data/models/network_response.dart';
@@ -137,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 16,),
               Visibility(
                 visible: _isLoading == false,
-                replacement: const Center(child: CircularProgressIndicator(),),
+                replacement: const CustomLoading(),
                 child: Column(
                   children: [
                     ElevatedButton(

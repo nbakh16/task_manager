@@ -10,6 +10,7 @@ import '../../../data/models/task_model.dart';
 import '../../../data/utils/task_status.dart';
 import '../../../data/utils/urls.dart';
 import '../../widgets/custom_alert_dialog.dart';
+import '../../widgets/custom_loading.dart';
 import '../../widgets/no_task_available_widget.dart';
 import '../../widgets/summary_card.dart';
 import '../../widgets/tasks_listview_builder.dart';
@@ -125,7 +126,7 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
           padding: EdgeInsets.all(MediaQuery.sizeOf(context).width * 0.02),
           child: Visibility(
             visible: _isLoading == false,
-            replacement: const Center(child: CircularProgressIndicator(),),
+            replacement: const CustomLoading(),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -140,6 +141,7 @@ class _NewTasksScreenState extends State<NewTasksScreen> {
                       tasksList: newTasksList,
                       chipColor: newTaskColor,
                       onEdit: (index){
+                        //TODO: task edit
                         print(index);
                       },
                       onDelete: (index) async {

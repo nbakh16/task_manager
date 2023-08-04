@@ -15,6 +15,7 @@ import '../../data/services/network_caller.dart';
 import '../../data/utils/task_status.dart';
 import '../../data/utils/urls.dart';
 import '../../data/utils/assets_utils.dart';
+import '../widgets/custom_loading.dart';
 
 class BottomNavBase extends StatefulWidget {
   const BottomNavBase({super.key});
@@ -216,7 +217,7 @@ class _BottomNavBaseState extends State<BottomNavBase> {
                   const SizedBox(height: 16,),
                   Visibility(
                     visible: _isLoading == false,
-                    replacement: const Center(child: CircularProgressIndicator(),),
+                    replacement: const CustomLoading(),
                     child: Column(
                       children: [
                         ElevatedButton(

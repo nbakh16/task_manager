@@ -6,6 +6,7 @@ import 'package:task_manager/data/utils/task_status.dart';
 import '../../data/utils/urls.dart';
 import '../../data/utils/assets_utils.dart';
 import '../../data/utils/colors.dart';
+import '../widgets/custom_loading.dart';
 import '../widgets/screen_background.dart';
 import 'bottom_nav_base.dart';
 
@@ -120,7 +121,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
               const SizedBox(height: 16,),
               Visibility(
                 visible: _isLoading == false,
-                replacement: const Center(child: CircularProgressIndicator(),),
+                replacement: const CustomLoading(),
                 child: Column(
                   children: [
                     ElevatedButton(

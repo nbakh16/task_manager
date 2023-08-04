@@ -10,6 +10,7 @@ import 'package:task_manager/ui/screen/set_password_screen.dart';
 import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utils/urls.dart';
+import '../widgets/custom_loading.dart';
 import '../widgets/screen_background.dart';
 
 class PinVerificationScreen extends StatefulWidget {
@@ -129,31 +130,35 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
               const SizedBox(height: 16,),
               Visibility(
                 visible: _isLoading == false,
-                replacement: const Center(child: CircularProgressIndicator(),),
-                child: ElevatedButton(
-                  onPressed: verifyEmailWithPin,
-                  child: const Text('Verify'),
+                replacement: const CustomLoading(),
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: verifyEmailWithPin,
+                      child: const Text('Verify'),
+                    ),
+                    signInButton(context)
+                  ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Have account? "),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => const LoginScreen()),
-                          (route) => false
-                      );
-                    },
-                    child: const Text('Sign In'),
-                  ),
-                ],
-              )
             ],
           ),
         )
+    );
+  }
+
+  Row signInButton(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Have account? "),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Sign In'),
+        ),
+      ],
     );
   }
 }

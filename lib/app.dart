@@ -28,11 +28,11 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
             TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
           },
         ),
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           foregroundColor: Colors.white,
           systemOverlayStyle: SystemUiOverlayStyle(
             statusBarIconBrightness: Brightness.light,
-            systemNavigationBarColor: mainColor,
+            systemNavigationBarColor: Colors.grey.shade50,
             systemNavigationBarIconBrightness: Brightness.dark
           )
         ),
@@ -41,7 +41,8 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
             labelLarge:  TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                letterSpacing: 1
+                letterSpacing: 1,
+                color: mainColor
               )
             ),
         ),
@@ -100,6 +101,10 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
         iconTheme: IconThemeData(
           color: mainColor.shade300,
           size: 30
+        ),
+        listTileTheme: ListTileThemeData(
+          iconColor: mainColor.shade300,
+          horizontalTitleGap: 3.0
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           elevation: 3,
