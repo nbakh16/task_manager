@@ -37,7 +37,7 @@ class _TasksScreenState extends State<TasksScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getNewTasksList();
+      getTasksList();
       getTaskStatusCount();
     });
   }
@@ -90,7 +90,7 @@ class _TasksScreenState extends State<TasksScreen> {
     }
   }
 
-  Future<void> getNewTasksList() async {
+  Future<void> getTasksList() async {
     _isLoading = true;
     if(mounted) {
       setState(() {});
@@ -100,7 +100,8 @@ class _TasksScreenState extends State<TasksScreen> {
 
     if(response.isSuccess && mounted) {
       _taskModel = TaskModel.fromJson(response.body!);
-    } else {
+    }
+    else {
       if(mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Tasks list failed!'),
@@ -118,11 +119,10 @@ class _TasksScreenState extends State<TasksScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: mainColor.shade50,
       body: RefreshIndicator(
         onRefresh: () async {
           getTaskStatusCount();
-          getNewTasksList();
+          getTasksList();
         },
         child: Padding(
           padding: EdgeInsets.all(MediaQuery.sizeOf(context).width * 0.02),
@@ -198,18 +198,22 @@ class _TasksScreenState extends State<TasksScreen> {
         SummaryCard(
           taskCount: newTaskCount,
           taskType: 'New Task',
+          textColor: newTaskColor,
         ),
         SummaryCard(
           taskCount: progressTaskCount,
           taskType: 'Progress',
+          textColor: progressTaskColor,
         ),
         SummaryCard(
           taskCount: canceledTaskCount,
           taskType: 'Canceled',
+          textColor: canceledTaskColor,
         ),
         SummaryCard(
           taskCount: completedTaskCount,
           taskType: 'Completed',
+          textColor: completedTaskColor,
         ),
       ],
     );

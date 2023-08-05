@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../data/utils/assets_utils.dart';
@@ -18,8 +19,14 @@ class ScreenBackground extends StatelessWidget {
         SizedBox(
           height: double.infinity,
           width: double.infinity,
-          child: SvgPicture.asset(AssetsUtils.backgroundSVG,
-            fit: BoxFit.cover,
+          child: ColorFiltered(
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).splashColor,
+              BlendMode.difference
+            ),
+            child: SvgPicture.asset(AssetsUtils.backgroundSVG,
+              fit: BoxFit.cover,
+            ),
           ),
         ),
 

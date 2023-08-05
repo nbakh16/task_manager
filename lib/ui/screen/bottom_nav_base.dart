@@ -15,7 +15,10 @@ import '../../data/utils/assets_utils.dart';
 import '../widgets/custom_loading.dart';
 
 class BottomNavBase extends StatefulWidget {
-  const BottomNavBase({super.key});
+  const BottomNavBase({super.key, this.switchTheme, this.isLight});
+
+  final VoidCallback? switchTheme;
+  final bool? isLight;
 
   @override
   State<BottomNavBase> createState() => _BottomNavBaseState();
@@ -85,9 +88,11 @@ class _BottomNavBaseState extends State<BottomNavBase> {
         // leading: profilePicture(context),
         actions: [
           IconButton(
-            onPressed: () {
-              signOutShowDialog(context);
-            },
+            onPressed: () => widget.switchTheme,
+            icon: const Icon(Icons.sunny),
+          ),
+          IconButton(
+            onPressed: () => signOutShowDialog(context),
             icon: const Icon(Icons.logout),
           )
         ],
@@ -119,12 +124,9 @@ class _BottomNavBaseState extends State<BottomNavBase> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        elevation: 8,
         currentIndex: _selectedIndex,
-        selectedItemColor: mainColor,
-        unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
-        type: BottomNavigationBarType.shifting,
+        type: BottomNavigationBarType.fixed,
         onTap: (int index) {
           setState(() {
             _selectedIndex = index;
@@ -193,9 +195,20 @@ class _BottomNavBaseState extends State<BottomNavBase> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Add new Task',
-                      style: Theme.of(context).primaryTextTheme.titleLarge
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Add new Task',
+                          style: Theme.of(context).primaryTextTheme.titleLarge
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: Icon(Icons.cancel_outlined,
+                            color: Colors.red.shade300,
+                          )
+                        )
+                      ],
                     ),
                   ),
                   TextFormField(

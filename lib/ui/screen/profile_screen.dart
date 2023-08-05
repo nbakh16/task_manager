@@ -215,10 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 replacement: const Center(child: CircularProgressIndicator()),
                 child: ElevatedButton(
                   // onPressed: updateProfile,
-                  onPressed: () {
-                    print("'Hello'");
-                    print(image.toString().split(' ').last.replaceAll("'", ""));
-                  },
+                  onPressed: updateProfile,
                   child: const Text('Update'),
                 ),
               ),
@@ -244,19 +241,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.photo_library),
-              title: Text('Gallery'),
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Gallery'),
               onTap: () {
                 pickImage(ImageSource.gallery);
                 Navigator.of(context).pop();
               },
             ),
             ListTile(
-              leading: Icon(Icons.camera_alt),
-              title: Text('Camera'),
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Camera'),
               onTap: () {
                 pickImage(ImageSource.camera);
-                // Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
             ),
           ],

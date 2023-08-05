@@ -47,9 +47,7 @@ class TaskCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(taskData.createdDate ?? '',
-                    style: Theme.of(context).primaryTextTheme.titleSmall?.copyWith(
-                        color: Colors.black
-                    )
+                    style: Theme.of(context).primaryTextTheme.titleSmall
                 ),
                 Row(
                   children: [
