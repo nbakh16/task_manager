@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
 import 'package:task_manager/data/utils/tasks_screen_info.dart';
+import 'package:task_manager/data/utils/theme_utility.dart';
 import 'package:task_manager/ui/screen/profile_screen.dart';
 import 'package:task_manager/ui/screen/splash_screen.dart';
 import 'package:task_manager/ui/screen/tasks_screen.dart';
@@ -15,10 +16,7 @@ import '../../data/utils/assets_utils.dart';
 import '../widgets/custom_loading.dart';
 
 class BottomNavBase extends StatefulWidget {
-  const BottomNavBase({super.key, this.switchTheme, this.isLight});
-
-  final VoidCallback? switchTheme;
-  final bool? isLight;
+  const BottomNavBase({super.key});
 
   @override
   State<BottomNavBase> createState() => _BottomNavBaseState();
@@ -80,16 +78,21 @@ class _BottomNavBaseState extends State<BottomNavBase> {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: profileSummary(context),
-        // leading: profilePicture(context),
         actions: [
           IconButton(
-            onPressed: () => widget.switchTheme,
-            icon: const Icon(Icons.sunny),
+            onPressed: ThemeUtility.switchTheme,
+            icon: Visibility(
+              visible: ThemeUtility.isLight,
+              replacement: const Icon(Icons.dark_mode),
+              child: const Icon(Icons.sunny),
+            )
           ),
           IconButton(
             onPressed: () => signOutShowDialog(context),

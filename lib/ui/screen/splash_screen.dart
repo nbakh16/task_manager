@@ -6,10 +6,7 @@ import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key, this.switchTheme, this.isLight}) : super(key: key);
-
-  final VoidCallback? switchTheme;
-  final bool? isLight;
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -32,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => isUserLoggedIn
-                    ? BottomNavBase(isLight: widget.isLight, switchTheme: widget.switchTheme,)
+                    ? const BottomNavBase()
                     : const LoginScreen()
             ),
             (route) => false);

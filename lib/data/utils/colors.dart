@@ -9,8 +9,8 @@ const MaterialColor mainColor = MaterialColor(_mainColorPrimaryValue, <int, Colo
   500: Color(_mainColorPrimaryValue),
   600: Color(0xFF1DB96B),
   700: Color(0xFF18B160),
-  800: Color(0xFF14A956),
-  900: Color(0xFF0B9B43),
+  800: Color(0xFF0C9B4B),
+  900: Color(0xFF036C2E),
 });
 const int _mainColorPrimaryValue = 0xFF21BF73;
 

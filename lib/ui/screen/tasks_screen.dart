@@ -141,7 +141,7 @@ class _TasksScreenState extends State<TasksScreen> {
                   child: Expanded(
                     child: ListView.builder(
                         shrinkWrap: true,
-                        physics: const ScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(),
                         itemCount: _taskModel.taskData?.length ?? 0,
                         itemBuilder: (context, index) {
                           return TaskCard(

@@ -16,7 +16,7 @@ class NoTaskAvailableWarning extends StatelessWidget {
           Icon(
             Icons.info_outline,
             size: MediaQuery.sizeOf(context).width * 0.25,
-            color: mainColor.shade300,
+            color: mainColor.withOpacity(0.45),
           ),
           const Padding(
             padding: EdgeInsets.only(top: 12.0),

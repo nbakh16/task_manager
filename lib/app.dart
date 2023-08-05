@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_manager/data/utils/theme_utility.dart';
 import 'package:task_manager/ui/screen/splash_screen.dart';
 import 'package:task_manager/data/utils/colors.dart';
 
@@ -13,11 +15,16 @@ class TaskManagerApp extends StatefulWidget {
 }
 
 class _TaskManagerAppState extends State<TaskManagerApp> {
+  @override
+  void initState() {
+    super.initState();
 
-  bool isLight = true;
-  void switchTheme() {
-    setState(() {
-      isLight = !isLight;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ThemeUtility.loadTheme();
+
+      ThemeUtility.themeChangedCallback = (bool isLight) {
+        setState(() {});
+      };
     });
   }
 
@@ -29,8 +36,9 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
       debugShowCheckedModeBanner: false,
       theme: _lightThemeData(context),
       darkTheme: _darkThemeData(context),
-      themeMode: ThemeMode.system,
-      home: SplashScreen(isLight: isLight, switchTheme: switchTheme),
+      themeMode: ThemeUtility.isLight ? ThemeMode.light : ThemeMode.dark,
+      home: const SplashScreen(),
+      // home: BottomNavBase(isLight: isLight, switchTheme: switchTheme),
     );
   }
 
