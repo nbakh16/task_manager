@@ -13,6 +13,7 @@ class Urls {
   static String completedTasksListUrl = '$_baseUrl/listTaskByStatus/Completed';
   static String progressTasksListUrl = '$_baseUrl/listTaskByStatus/Progress';
   static String canceledTasksListUrl = '$_baseUrl/listTaskByStatus/Cancelled';
+  static String taskStatusUpdateUrl = '$_baseUrl/updateTaskStatus/'; //id //taskStatus
 
 
   static String recoveryEmailUrl = '$_baseUrl/RecoverVerifyEmail/'; //email address

@@ -254,6 +254,7 @@ class _TasksScreenState extends State<TasksScreen> {
                       maxLength: 50,
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.next,
+                      readOnly: true,
                       validator: (String? value) {
                         if(value?.isEmpty ?? true) {
                           return 'Missing title!';
@@ -272,6 +273,7 @@ class _TasksScreenState extends State<TasksScreen> {
                       maxLength: 250,
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.done,
+                      readOnly: true,
                       // onEditingComplete: createTask,
                       // validator: (String? value) {
                       //   if(value?.isEmpty ?? true) {
@@ -328,6 +330,7 @@ class _TasksScreenState extends State<TasksScreen> {
                           ElevatedButton(
                             onPressed: (){
                               //TODO: edit task api
+                              updateTaskStatus(_taskModel.taskData![index].sId!, taskStatus!);
                             },
                             child: const Text('Update Task'),
                           ),
@@ -340,6 +343,37 @@ class _TasksScreenState extends State<TasksScreen> {
             );
           });
         });
+  }
+
+  Future<void> updateTaskStatus(String id, String status) async {
+    final NetworkResponse response = await NetworkCaller().getRequest('${Urls.taskStatusUpdateUrl}$id/$status');
+    final Map<String, Color> colorsMap = {
+      TaskStatus.newTask: newTaskColor,
+      TaskStatus.progressTask: progressTaskColor,
+      TaskStatus.canceledTask: canceledTaskColor,
+      TaskStatus.completedTask: completedTaskColor,
+    };
+
+    final Color snackBarColor = colorsMap[status] ?? mainColor;
+
+    if(response.isSuccess && mounted) {
+      Navigator.pop(context);
+
+      //TODO: update screen without calling API
+      getTasksList();
+      getTaskStatusCount();
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Task status updated to $status'),
+        backgroundColor: snackBarColor,
+      ));
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Task status update failed!'),
+        backgroundColor: Colors.red,
+      ));
+    }
   }
 
   Future<void> deleteTask(String id) async {
