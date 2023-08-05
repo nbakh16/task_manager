@@ -6,6 +6,7 @@ import 'package:task_manager/data/models/task_status_count_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/data/utils/tasks_screen_info.dart';
+import 'package:task_manager/ui/widgets/custom_chip.dart';
 
 import '../../data/models/task_model.dart';
 import '../../data/utils/task_status.dart';
@@ -199,11 +200,10 @@ class _TasksScreenState extends State<TasksScreen> {
   void editTaskModalBottomSheet(int index) {
     TextEditingController titleTEController = TextEditingController();
     TextEditingController descriptionTEController = TextEditingController();
-    String? taskStatus;
 
     titleTEController.text = _taskModel.taskData?[index].title ?? "";
     descriptionTEController.text = _taskModel.taskData?[index].description ?? "";
-    taskStatus = _taskModel.taskData?[index].status;
+    String taskStatus = _taskModel.taskData?[index].status ?? 'New';
 
     showModalBottomSheet(
         shape: const RoundedRectangleBorder(
@@ -283,44 +283,72 @@ class _TasksScreenState extends State<TasksScreen> {
                       // },
                     ),
                     const SizedBox(height: 12,),
-
-                    RadioListTile(
-                      value: TaskStatus.newTask,
-                      groupValue: taskStatus,
-                      title: const Text('New Task'),
-                      onChanged: (value) {
-                        taskStatus = value;
-                        setState(() {});
-                      },
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomChip(
+                          radio: RadioListTile(
+                            value: TaskStatus.newTask,
+                            groupValue: taskStatus,
+                            title: Text(TaskStatus.newTask,
+                              style: Theme.of(context).primaryTextTheme.labelMedium,
+                            ),
+                            onChanged: (value) {
+                              taskStatus = value!;
+                              setState(() {});
+                            },
+                          ),
+                          chipColor: newTaskColor,
+                        ),
+                        CustomChip(
+                          radio: RadioListTile(
+                            value: TaskStatus.progressTask,
+                            groupValue: taskStatus,
+                            title: Text(TaskStatus.progressTask,
+                              style: Theme.of(context).primaryTextTheme.labelMedium,
+                            ),
+                            onChanged: (value) {
+                              taskStatus = value!;
+                              setState(() {});
+                            },
+                          ),
+                          chipColor: progressTaskColor,
+                        ),
+                      ],
                     ),
-                    RadioListTile(
-                      value: TaskStatus.progressTask,
-                      groupValue: taskStatus,
-                      title: const Text('Progress Task'),
-                      onChanged: (value) {
-                        taskStatus = value;
-                        setState(() {});
-                      },
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomChip(
+                          radio: RadioListTile(
+                            value: TaskStatus.canceledTask,
+                            groupValue: taskStatus,
+                            title: Text(TaskStatus.canceledTask,
+                              style: Theme.of(context).primaryTextTheme.labelMedium,
+                            ),
+                            onChanged: (value) {
+                              taskStatus = value!;
+                              setState(() {});
+                            },
+                          ),
+                          chipColor: canceledTaskColor,
+                        ),
+                        CustomChip(
+                          radio: RadioListTile(
+                            value: TaskStatus.completedTask,
+                            groupValue: taskStatus,
+                            title: Text(TaskStatus.completedTask,
+                              style: Theme.of(context).primaryTextTheme.labelMedium,
+                            ),
+                            onChanged: (value) {
+                              taskStatus = value!;
+                              setState(() {});
+                            },
+                          ),
+                          chipColor: completedTaskColor,
+                        ),
+                      ],
                     ),
-                    RadioListTile(
-                      value: TaskStatus.canceledTask,
-                      groupValue: taskStatus,
-                      title: const Text('Canceled Task'),
-                      onChanged: (value) {
-                        taskStatus = value;
-                        setState(() {});
-                      },
-                    ),
-                    RadioListTile(
-                      value: TaskStatus.completedTask,
-                      groupValue: taskStatus,
-                      title: const Text('Completed Task'),
-                      onChanged: (value) {
-                        taskStatus = value;
-                        setState(() {});
-                      },
-                    ),
-
                     const SizedBox(height: 16,),
                     Visibility(
                       visible: _isLoading == false,
@@ -330,7 +358,12 @@ class _TasksScreenState extends State<TasksScreen> {
                           ElevatedButton(
                             onPressed: (){
                               //TODO: edit task api
-                              updateTaskStatus(_taskModel.taskData![index].sId!, taskStatus!);
+
+                              if (_taskModel.taskData![index].status != taskStatus) {
+                                updateTaskStatus(_taskModel.taskData![index].sId!, taskStatus);
+                              } else {
+                                Navigator.pop(context);
+                              }
                             },
                             child: const Text('Update Task'),
                           ),

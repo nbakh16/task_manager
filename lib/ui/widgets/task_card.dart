@@ -55,7 +55,7 @@ class TaskCard extends StatelessWidget {
                       label: SizedBox(
                         width: MediaQuery.sizeOf(context).width * 0.20,
                         child: Center(child: Text(taskData.status ?? 'New',
-                          style: const TextStyle(color: Colors.white, fontSize: 14),
+                          style: Theme.of(context).primaryTextTheme.labelMedium,
                         ))
                       ),
                       backgroundColor: chipColor,

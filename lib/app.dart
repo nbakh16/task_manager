@@ -88,6 +88,14 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
             letterSpacing: 0.5
           )
         ),
+        labelMedium: GoogleFonts.nunito(
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+            letterSpacing: 0.5
+          )
+        ),
         displaySmall: GoogleFonts.nunito(
             textStyle: TextStyle(
                 fontSize: 15,
@@ -159,6 +167,9 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
         foregroundColor: Colors.white,
         iconSize: 32,
       ),
+      radioTheme: RadioThemeData(
+        fillColor: MaterialStateProperty.all<Color>(Colors.white)
+      )
     );
   }
 
@@ -209,6 +220,14 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
                 color: Colors.white.withOpacity(0.75),
                 letterSpacing: 0.5
             )
+        ),
+        labelMedium: GoogleFonts.nunito(
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+            letterSpacing: 0.5
+          )
         ),
         displaySmall: GoogleFonts.nunito(
           textStyle: TextStyle(
