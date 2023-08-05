@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
 import 'package:task_manager/data/utils/tasks_screen_info.dart';
 import 'package:task_manager/data/utils/theme_utility.dart';
@@ -12,7 +13,6 @@ import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utils/task_status.dart';
 import '../../data/utils/urls.dart';
-import '../../data/utils/assets_utils.dart';
 import '../widgets/custom_loading.dart';
 
 class BottomNavBase extends StatefulWidget {
@@ -90,8 +90,8 @@ class _BottomNavBaseState extends State<BottomNavBase> {
             onPressed: ThemeUtility.switchTheme,
             icon: Visibility(
               visible: ThemeUtility.isLight,
-              replacement: const Icon(Icons.dark_mode),
-              child: const Icon(Icons.sunny),
+              replacement: const LineIcon.moon(),
+              child: const LineIcon.sun()
             )
           ),
           IconButton(
@@ -141,10 +141,10 @@ class _BottomNavBaseState extends State<BottomNavBase> {
           });
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.filter_1), label: 'New Task'),
-          BottomNavigationBarItem(icon: Icon(Icons.filter_2), label: 'Progress'),
-          BottomNavigationBarItem(icon: Icon(Icons.filter_3), label: 'Canceled'),
-          BottomNavigationBarItem(icon: Icon(Icons.filter_4), label: 'Completed'),
+          BottomNavigationBarItem(icon: LineIcon.clipboardList(), label: 'New Task'),
+          BottomNavigationBarItem(icon: LineIcon.cog(), label: 'Progress'),
+          BottomNavigationBarItem(icon: LineIcon.ban(), label: 'Canceled'),
+          BottomNavigationBarItem(icon: LineIcon.checkCircle(), label: 'Completed'),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -258,7 +258,7 @@ class _BottomNavBaseState extends State<BottomNavBase> {
                       children: [
                         ElevatedButton(
                           onPressed: createTask,
-                          child: Image.asset(AssetsUtils.forwardPNG,),
+                          child: const LineIcon.chevronCircleRight(),
                         ),
                       ],
                     ),

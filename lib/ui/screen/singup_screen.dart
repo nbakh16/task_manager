@@ -1,16 +1,14 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
-import 'package:task_manager/data/utils/auth_utility.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/screen/login_screen.dart';
 import 'package:task_manager/ui/widgets/custom_loading.dart';
 
-import '../../data/models/login_model.dart';
 import '../../data/utils/urls.dart';
-import '../../data/utils/assets_utils.dart';
 import '../widgets/screen_background.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -215,7 +213,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     children: [
                       ElevatedButton(
                         onPressed: userSignup,
-                        child: Image.asset(AssetsUtils.forwardPNG,),
+                        child: const LineIcon.chevronCircleRight(),
                       ),
                       signInButton(context)
                     ],

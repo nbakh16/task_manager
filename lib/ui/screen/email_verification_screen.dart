@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/ui/screen/pin_verification_screen.dart';
 
-import '../../data/utils/assets_utils.dart';
 import '../../data/utils/colors.dart';
 import '../../data/utils/urls.dart';
 import '../widgets/custom_loading.dart';
@@ -117,7 +117,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: sendPinToEmail,
-                      child: Image.asset(AssetsUtils.forwardPNG,),
+                      child: const LineIcon.chevronCircleRight(),
                     ),
                     signInButton(context)
                   ],

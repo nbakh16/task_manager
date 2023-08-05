@@ -12,7 +12,7 @@ class Urls {
   static String newTasksListUrl = '$_baseUrl/listTaskByStatus/New';
   static String completedTasksListUrl = '$_baseUrl/listTaskByStatus/Completed';
   static String progressTasksListUrl = '$_baseUrl/listTaskByStatus/Progress';
-  static String canceledTasksListUrl = '$_baseUrl/listTaskByStatus/Cancelled';
+  static String canceledTasksListUrl = '$_baseUrl/listTaskByStatus/Canceled';
   static String taskStatusUpdateUrl = '$_baseUrl/updateTaskStatus/'; //id //taskStatus
 
 

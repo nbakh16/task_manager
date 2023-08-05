@@ -40,7 +40,7 @@ class TaskCard extends StatelessWidget {
               children: [
                 const SizedBox(height: 8),
                 Text(taskData.description ?? '',
-                  style: Theme.of(context).primaryTextTheme.titleSmall,
+                  style: Theme.of(context).primaryTextTheme.titleMedium,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.justify,
@@ -54,8 +54,11 @@ class TaskCard extends StatelessWidget {
                     Chip(
                       label: SizedBox(
                         width: MediaQuery.sizeOf(context).width * 0.20,
-                        child: Center(child: Text(taskData.status ?? 'New',
-                          style: Theme.of(context).primaryTextTheme.labelMedium,
+                        child: Center(child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(taskData.status ?? 'New',
+                            style: Theme.of(context).primaryTextTheme.labelMedium,
+                          ),
                         ))
                       ),
                       backgroundColor: chipColor,

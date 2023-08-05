@@ -144,6 +144,7 @@ class _TasksScreenState extends State<TasksScreen> {
                   child: Expanded(
                     child: ListView.builder(
                         shrinkWrap: true,
+                        padding: const EdgeInsets.only(bottom: 56),
                         physics: const AlwaysScrollableScrollPhysics(),
                         itemCount: _taskModel.taskData?.length ?? 0,
                         itemBuilder: (context, index) {
@@ -290,8 +291,11 @@ class _TasksScreenState extends State<TasksScreen> {
                           radio: RadioListTile(
                             value: TaskStatus.newTask,
                             groupValue: taskStatus,
-                            title: Text(TaskStatus.newTask,
-                              style: Theme.of(context).primaryTextTheme.labelMedium,
+                            title: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(TaskStatus.newTask,
+                                style: Theme.of(context).primaryTextTheme.labelMedium,
+                              ),
                             ),
                             onChanged: (value) {
                               taskStatus = value!;
@@ -304,8 +308,11 @@ class _TasksScreenState extends State<TasksScreen> {
                           radio: RadioListTile(
                             value: TaskStatus.progressTask,
                             groupValue: taskStatus,
-                            title: Text(TaskStatus.progressTask,
-                              style: Theme.of(context).primaryTextTheme.labelMedium,
+                            title: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(TaskStatus.progressTask,
+                                style: Theme.of(context).primaryTextTheme.labelMedium,
+                              ),
                             ),
                             onChanged: (value) {
                               taskStatus = value!;
@@ -323,8 +330,11 @@ class _TasksScreenState extends State<TasksScreen> {
                           radio: RadioListTile(
                             value: TaskStatus.canceledTask,
                             groupValue: taskStatus,
-                            title: Text(TaskStatus.canceledTask,
-                              style: Theme.of(context).primaryTextTheme.labelMedium,
+                            title: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(TaskStatus.canceledTask,
+                                style: Theme.of(context).primaryTextTheme.labelMedium,
+                              ),
                             ),
                             onChanged: (value) {
                               taskStatus = value!;
@@ -337,8 +347,11 @@ class _TasksScreenState extends State<TasksScreen> {
                           radio: RadioListTile(
                             value: TaskStatus.completedTask,
                             groupValue: taskStatus,
-                            title: Text(TaskStatus.completedTask,
-                              style: Theme.of(context).primaryTextTheme.labelMedium,
+                            title: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(TaskStatus.completedTask,
+                                style: Theme.of(context).primaryTextTheme.labelMedium,
+                              ),
                             ),
                             onChanged: (value) {
                               taskStatus = value!;

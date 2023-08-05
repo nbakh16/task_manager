@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/task_status.dart';
 
-import '../../data/utils/urls.dart';
-import '../../data/utils/assets_utils.dart';
 import '../../data/utils/colors.dart';
+import '../../data/utils/urls.dart';
 import '../widgets/custom_loading.dart';
 import '../widgets/screen_background.dart';
 import 'bottom_nav_base.dart';
@@ -126,7 +126,7 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
                   children: [
                     ElevatedButton(
                       onPressed: createTask,
-                      child: Image.asset(AssetsUtils.forwardPNG,),
+                      child: const LineIcon.chevronCircleRight(),
                     ),
                   ],
                 ),
