@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/data/utils/theme_utility.dart';
 import 'package:task_manager/ui/screen/splash_screen.dart';
-import 'package:task_manager/data/utils/colors.dart';
 
 class TaskManagerApp extends StatefulWidget {
   static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
