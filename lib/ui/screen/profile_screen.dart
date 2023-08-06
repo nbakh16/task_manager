@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
+import '../../data/models/login_model.dart';
 import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utils/colors.dart';
@@ -16,15 +17,25 @@ class ProfileScreen extends StatefulWidget {
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
-
+//TODO: change password option only when user's current password matches
 class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
+  UserData userData = AuthUtility.userInfo.data!;
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _firstNameTEController = TextEditingController();
   final TextEditingController _lastNameTEController = TextEditingController();
   final TextEditingController _mobileTEController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailTEController.text = userData.email!;
+    _firstNameTEController.text = userData.firstName!;
+    _lastNameTEController.text = userData.lastName!;
+    _mobileTEController.text = userData.mobile!;
+  }
 
   File? image;
   Future pickImage(ImageSource imageSource) async {
@@ -59,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       "firstName": _firstNameTEController.text.trim(),
       "lastName": _lastNameTEController.text.trim(),
       "mobile": _mobileTEController.text.trim(),
-      "photo": image?.toString().split(' ').last.replaceAll("'", "") ?? AuthUtility.userInfo.data?.photo ?? ""
+      // "photo": image?.toString().split(' ').last.replaceAll("'", "") ?? AuthUtility.userInfo.data?.photo ?? ""
     };
     final NetworkResponse response = await NetworkCaller().postRequest(Urls.profileUpdateUrl, requestBody);
 
@@ -69,15 +80,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     if(response.isSuccess && mounted) {
-      // LoginModel loginModel = LoginModel.fromJson(response.body!);
-      // await AuthUtility.saveUserInfo(loginModel);
+      userData.firstName = _firstNameTEController.text.trim();
+      userData.lastName = _lastNameTEController.text.trim();
+      userData.mobile = _mobileTEController.text.trim();
+      AuthUtility.updateUserInfo(userData);
 
-      if(mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Profile updated!'),
-          backgroundColor: mainColor,
-        ));
-      }
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Profile updated!'),
+        backgroundColor: mainColor,
+      ));
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -90,11 +101,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _emailTEController.text = AuthUtility.userInfo.data?.email ?? '';
-    _firstNameTEController.text = AuthUtility.userInfo.data?.firstName ?? '';
-    _lastNameTEController.text = AuthUtility.userInfo.data?.lastName ?? '';
-    _mobileTEController.text = AuthUtility.userInfo.data?.mobile ?? '';
-
     return Scaffold(
       appBar: AppBar(title: const Text('My Profile'),),
       body: ScreenBackground(

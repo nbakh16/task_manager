@@ -232,7 +232,7 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
         titleSmall: GoogleFonts.nunito(
             textStyle: TextStyle(
                 fontSize: 14,
-                fontWeight: FontWeight.w200,
+                fontWeight: FontWeight.w300,
                 color: Colors.white.withOpacity(0.75),
                 letterSpacing: 0.5
             )
