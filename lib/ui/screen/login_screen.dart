@@ -95,7 +95,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _emailTEController,
                 decoration: const InputDecoration(
                   hintText: 'Email',
-                  labelText: 'Email'
+                  labelText: 'Email',
+                  prefixIcon: LineIcon.at()
                 ),
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
@@ -112,6 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: InputDecoration(
                   hintText: 'Password',
                   labelText: 'Password',
+                  prefixIcon: const LineIcon.key(),
                   suffixIcon: IconButton(
                     onPressed: (){
                       _isObscureText = !_isObscureText;

@@ -19,11 +19,12 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ThemeUtility.loadTheme();
-
       ThemeUtility.themeChangedCallback = (bool isLight) {
         setState(() {});
       };
+
+      ThemeUtility.loadTheme();
+      setState(() {});
     });
   }
 
@@ -91,7 +92,7 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
         titleSmall: GoogleFonts.nunito(
             textStyle: TextStyle(
                 fontSize: 14,
-                fontWeight: FontWeight.w200,
+                fontWeight: FontWeight.w300,
                 color: Colors.black.withOpacity(0.75),
                 letterSpacing: 0.5
             )
@@ -132,7 +133,7 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
             ),
             borderRadius: BorderRadius.all(Radius.circular(12.0))
         ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12)
+        contentPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -272,7 +273,7 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
               ),
               borderRadius: BorderRadius.all(Radius.circular(12.0))
           ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12)
+          contentPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(

@@ -89,13 +89,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: remove pre-fill lines
-    _emailTEController.text = 'testing.signup@email.com';
-    _firstNameTEController.text = 'Sign';
-    _lastNameTEController.text = 'Up';
-    _mobileTEController.text = '11111111111';
-    _passwordTEController.text = '12345678';
-
     return Scaffold(
         body: ScreenBackground(
           child: Form(
