@@ -142,25 +142,28 @@ class _TasksScreenState extends State<TasksScreen> {
                   visible: _taskModel.taskData?.isNotEmpty ?? false,
                   replacement: const NoTaskAvailableWarning(),
                   child: Expanded(
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.only(bottom: 56),
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        itemCount: _taskModel.taskData?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          return TaskCard(
-                            taskData: _taskModel.taskData![index],
-                            onEdit: () {
-                              editTaskModalBottomSheet(index);
-                            },
-                            onDelete: () {
-                              _isTaskDeleted = false;
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.only(bottom: 56),
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          itemCount: _taskModel.taskData?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            return TaskCard(
+                              taskData: _taskModel.taskData![index],
+                              onEdit: () {
+                                editTaskModalBottomSheet(index);
+                              },
+                              onDelete: () {
+                                _isTaskDeleted = false;
 
-                              deleteTaskShowDialog(context, index);
-                            },
-                            chipColor: widget.tasksScreenInfo.chipColor,
-                          );
-                        }),
+                                deleteTaskShowDialog(context, index);
+                              },
+                              chipColor: widget.tasksScreenInfo.chipColor,
+                            );
+                          }),
+                    ),
                   ),
                 )
               ],
@@ -215,175 +218,177 @@ class _TasksScreenState extends State<TasksScreen> {
         isScrollControlled: true,
         builder: (context) {
           return StatefulBuilder(builder: (context, setState){
-            return Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom + 18,
-                  right: 18,
-                  left: 18,
-                  top: 18),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 18,
+                    right: 18,
+                    left: 18,
+                    top: 18),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                                'Update Task',
+                                style: Theme.of(context).primaryTextTheme.titleLarge
+                            ),
+                            IconButton(
+                                onPressed: () => Navigator.pop(context),
+                                icon: Icon(Icons.cancel_outlined,
+                                  color: Colors.red.shade300,
+                                )
+                            )
+                          ],
+                        ),
+                      ),
+                      TextFormField(
+                        controller: titleTEController,
+                        decoration: const InputDecoration(
+                            hintText: 'Title of the task',
+                            labelText: 'Title'
+                        ),
+                        maxLines: 1,
+                        maxLength: 50,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        readOnly: true,
+                        validator: (String? value) {
+                          if(value?.isEmpty ?? true) {
+                            return 'Missing title!';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12,),
+                      TextFormField(
+                        controller: descriptionTEController,
+                        decoration: const InputDecoration(
+                          hintText: 'Brief description',
+                          labelText: 'Description',
+                        ),
+                        maxLines: 4,
+                        maxLength: 250,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.done,
+                        readOnly: true,
+                        // onEditingComplete: createTask,
+                        // validator: (String? value) {
+                        //   if(value?.isEmpty ?? true) {
+                        //     return 'Description';
+                        //   }
+                        //   return null;
+                        // },
+                      ),
+                      const SizedBox(height: 12,),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                              'Update Task',
-                              style: Theme.of(context).primaryTextTheme.titleLarge
+                          CustomChip(
+                            radio: RadioListTile(
+                              value: TaskStatus.newTask,
+                              groupValue: taskStatus,
+                              title: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(TaskStatus.newTask,
+                                  style: Theme.of(context).primaryTextTheme.labelMedium,
+                                ),
+                              ),
+                              onChanged: (value) {
+                                taskStatus = value!;
+                                setState(() {});
+                              },
+                            ),
+                            chipColor: newTaskColor,
                           ),
-                          IconButton(
-                              onPressed: () => Navigator.pop(context),
-                              icon: Icon(Icons.cancel_outlined,
-                                color: Colors.red.shade300,
-                              )
-                          )
+                          CustomChip(
+                            radio: RadioListTile(
+                              value: TaskStatus.progressTask,
+                              groupValue: taskStatus,
+                              title: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(TaskStatus.progressTask,
+                                  style: Theme.of(context).primaryTextTheme.labelMedium,
+                                ),
+                              ),
+                              onChanged: (value) {
+                                taskStatus = value!;
+                                setState(() {});
+                              },
+                            ),
+                            chipColor: progressTaskColor,
+                          ),
                         ],
                       ),
-                    ),
-                    TextFormField(
-                      controller: titleTEController,
-                      decoration: const InputDecoration(
-                          hintText: 'Title of the task',
-                          labelText: 'Title'
-                      ),
-                      maxLines: 1,
-                      maxLength: 50,
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.next,
-                      readOnly: true,
-                      validator: (String? value) {
-                        if(value?.isEmpty ?? true) {
-                          return 'Missing title!';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 12,),
-                    TextFormField(
-                      controller: descriptionTEController,
-                      decoration: const InputDecoration(
-                        hintText: 'Brief description',
-                        labelText: 'Description',
-                      ),
-                      maxLines: 4,
-                      maxLength: 250,
-                      keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.done,
-                      readOnly: true,
-                      // onEditingComplete: createTask,
-                      // validator: (String? value) {
-                      //   if(value?.isEmpty ?? true) {
-                      //     return 'Description';
-                      //   }
-                      //   return null;
-                      // },
-                    ),
-                    const SizedBox(height: 12,),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CustomChip(
-                          radio: RadioListTile(
-                            value: TaskStatus.newTask,
-                            groupValue: taskStatus,
-                            title: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(TaskStatus.newTask,
-                                style: Theme.of(context).primaryTextTheme.labelMedium,
-                              ),
-                            ),
-                            onChanged: (value) {
-                              taskStatus = value!;
-                              setState(() {});
-                            },
-                          ),
-                          chipColor: newTaskColor,
-                        ),
-                        CustomChip(
-                          radio: RadioListTile(
-                            value: TaskStatus.progressTask,
-                            groupValue: taskStatus,
-                            title: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(TaskStatus.progressTask,
-                                style: Theme.of(context).primaryTextTheme.labelMedium,
-                              ),
-                            ),
-                            onChanged: (value) {
-                              taskStatus = value!;
-                              setState(() {});
-                            },
-                          ),
-                          chipColor: progressTaskColor,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CustomChip(
-                          radio: RadioListTile(
-                            value: TaskStatus.canceledTask,
-                            groupValue: taskStatus,
-                            title: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(TaskStatus.canceledTask,
-                                style: Theme.of(context).primaryTextTheme.labelMedium,
-                              ),
-                            ),
-                            onChanged: (value) {
-                              taskStatus = value!;
-                              setState(() {});
-                            },
-                          ),
-                          chipColor: canceledTaskColor,
-                        ),
-                        CustomChip(
-                          radio: RadioListTile(
-                            value: TaskStatus.completedTask,
-                            groupValue: taskStatus,
-                            title: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(TaskStatus.completedTask,
-                                style: Theme.of(context).primaryTextTheme.labelMedium,
-                              ),
-                            ),
-                            onChanged: (value) {
-                              taskStatus = value!;
-                              setState(() {});
-                            },
-                          ),
-                          chipColor: completedTaskColor,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16,),
-                    Visibility(
-                      visible: _isLoading == false,
-                      replacement: const CustomLoading(),
-                      child: Column(
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          ElevatedButton(
-                            onPressed: (){
-                              //TODO: edit task api
+                          CustomChip(
+                            radio: RadioListTile(
+                              value: TaskStatus.canceledTask,
+                              groupValue: taskStatus,
+                              title: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(TaskStatus.canceledTask,
+                                  style: Theme.of(context).primaryTextTheme.labelMedium,
+                                ),
+                              ),
+                              onChanged: (value) {
+                                taskStatus = value!;
+                                setState(() {});
+                              },
+                            ),
+                            chipColor: canceledTaskColor,
+                          ),
+                          CustomChip(
+                            radio: RadioListTile(
+                              value: TaskStatus.completedTask,
+                              groupValue: taskStatus,
+                              title: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(TaskStatus.completedTask,
+                                  style: Theme.of(context).primaryTextTheme.labelMedium,
+                                ),
+                              ),
+                              onChanged: (value) {
+                                taskStatus = value!;
+                                setState(() {});
+                              },
+                            ),
+                            chipColor: completedTaskColor,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16,),
+                      Visibility(
+                        visible: _isLoading == false,
+                        replacement: const CustomLoading(),
+                        child: Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: (){
+                                //TODO: edit task api
 
-                              if (_taskModel.taskData![index].status != taskStatus) {
-                                updateTaskStatus(_taskModel.taskData![index].sId!, taskStatus);
-                              } else {
-                                Navigator.pop(context);
-                              }
-                            },
-                            child: const Text('Update Task'),
-                          ),
-                        ],
+                                if (_taskModel.taskData![index].status != taskStatus) {
+                                  updateTaskStatus(_taskModel.taskData![index].sId!, taskStatus);
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: const Text('Update Task'),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );

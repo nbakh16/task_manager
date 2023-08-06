@@ -184,86 +184,88 @@ class _BottomNavBaseState extends State<BottomNavBase> {
         context: context,
         isScrollControlled: true,
         builder: (context) {
-          return Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom + 18,
-                right: 18,
-                left: 18,
-                top: 18),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Add new Task',
-                          style: Theme.of(context).primaryTextTheme.titleLarge
-                        ),
-                        IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: Icon(Icons.cancel_outlined,
-                            color: Colors.red.shade300,
+          return SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 18,
+                  right: 18,
+                  left: 18,
+                  top: 18),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Add new Task',
+                            style: Theme.of(context).primaryTextTheme.titleLarge
+                          ),
+                          IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: Icon(Icons.cancel_outlined,
+                              color: Colors.red.shade300,
+                            )
                           )
-                        )
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  TextFormField(
-                    controller: _titleTEController,
-                    decoration: const InputDecoration(
-                        hintText: 'Title of the task',
-                        labelText: 'Title'
+                    TextFormField(
+                      controller: _titleTEController,
+                      decoration: const InputDecoration(
+                          hintText: 'Title of the task',
+                          labelText: 'Title'
+                      ),
+                      maxLines: 1,
+                      maxLength: 50,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
+                      validator: (String? value) {
+                        if(value?.isEmpty ?? true) {
+                          return 'Missing title!';
+                        }
+                        return null;
+                      },
                     ),
-                    maxLines: 1,
-                    maxLength: 50,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                    validator: (String? value) {
-                      if(value?.isEmpty ?? true) {
-                        return 'Missing title!';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12,),
-                  TextFormField(
-                    controller: _descriptionTEController,
-                    decoration: const InputDecoration(
-                      hintText: 'Brief description',
-                      labelText: 'Description',
+                    const SizedBox(height: 12,),
+                    TextFormField(
+                      controller: _descriptionTEController,
+                      decoration: const InputDecoration(
+                        hintText: 'Brief description',
+                        labelText: 'Description',
+                      ),
+                      maxLines: 4,
+                      maxLength: 250,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                      onEditingComplete: createTask,
+                      // validator: (String? value) {
+                      //   if(value?.isEmpty ?? true) {
+                      //     return 'Description';
+                      //   }
+                      //   return null;
+                      // },
                     ),
-                    maxLines: 4,
-                    maxLength: 250,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.done,
-                    onEditingComplete: createTask,
-                    // validator: (String? value) {
-                    //   if(value?.isEmpty ?? true) {
-                    //     return 'Description';
-                    //   }
-                    //   return null;
-                    // },
-                  ),
-                  const SizedBox(height: 16,),
-                  Visibility(
-                    visible: _isLoading == false,
-                    replacement: const CustomLoading(),
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: createTask,
-                          child: const LineIcon.chevronCircleRight(),
-                        ),
-                      ],
+                    const SizedBox(height: 16,),
+                    Visibility(
+                      visible: _isLoading == false,
+                      replacement: const CustomLoading(),
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: createTask,
+                            child: const LineIcon.chevronCircleRight(),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

@@ -62,9 +62,7 @@ class NetworkCaller {
   Future<void> signOut() async {
     await AuthUtility.clearUserInfo();
 
-    Navigator.pushAndRemoveUntil(
-        TaskManagerApp.globalKey.currentContext!,
-        MaterialPageRoute(builder: (context) => const SplashScreen()), (
-        route) => false);
+    TaskManagerApp.globalKey.currentState!.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const SplashScreen()), (route) => false);
   }
 }
