@@ -9,6 +9,7 @@ import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utils/colors.dart';
 import '../../data/utils/urls.dart';
+import '../widgets/custom_alert_dialog.dart';
 import '../widgets/custom_loading.dart';
 import '../widgets/screen_background.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -19,7 +20,6 @@ class ProfileScreen extends StatefulWidget {
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
-//TODO: change password option only when user's current password matches
 class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _passwordFormKey = GlobalKey<FormState>();
@@ -93,6 +93,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       userData.mobile = _mobileTEController.text.trim();
       AuthUtility.updateUserInfo(userData);
 
+      Navigator.pop(context);
+
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Profile updated!'),
         backgroundColor: mainColor,
@@ -105,6 +107,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ));
     }
     await AuthUtility.getUserInfo();
+  }
+
+  Future<Object?> updateProfileShowDialog(BuildContext context) {
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (_, __, ___) {
+        return Container();
+      },
+      transitionBuilder: (_, anim, __, ___) {
+        return Transform.scale(
+          scale: Curves.easeInOut.transform(anim.value),
+          child: CustomAlertDialog(
+            onPress: updateProfile,
+            title: 'Update Profile',
+            content: 'Are you sure to update your profile?',
+            actionText: 'Confirm'
+          ),
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 300),
+    );
   }
 
   Future<void> changePassword() async {
@@ -278,7 +301,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   }
                   return null;
                 },
-                onEditingComplete: updateProfile,
+                onEditingComplete: () => updateProfileShowDialog(context),
               ),
               const SizedBox(height: 16,),
               Visibility(
@@ -287,15 +310,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   children: [
                     ElevatedButton(
-                      // onPressed: updateProfile,
-                      onPressed: updateProfile,
+                      onPressed: () => updateProfileShowDialog(context),
                       child: const Text('Update'),
                     ),
                     const SizedBox(height: 6.0,),
                     TextButton(
-                      onPressed: () {
-                        _changePasswordBottomSheet();
-                      },
+                      onPressed: _changePasswordBottomSheet,
                       child: const Text('Change Password'),
                     ),
                   ],

@@ -410,9 +410,39 @@ class _TasksScreenState extends State<TasksScreen> {
     if(response.isSuccess && mounted) {
       Navigator.pop(context);
 
-      //TODO: update screen without calling API
-      getTasksList();
-      getTaskStatusCount();
+      setState(() {
+        _taskModel.taskData!.removeWhere((element) => element.sId == id);
+
+        switch(widget.tasksScreenInfo.taskStatus) {
+          case TaskStatus.newTask:
+            newTaskCount -= 1;
+            break;
+          case TaskStatus.progressTask:
+            progressTaskCount -= 1;
+            break;
+          case TaskStatus.canceledTask:
+            canceledTaskCount -= 1;
+            break;
+          case TaskStatus.completedTask:
+            completedTaskCount -= 1;
+            break;
+        }
+
+        switch(status) {
+          case TaskStatus.newTask:
+            newTaskCount += 1;
+            break;
+          case TaskStatus.progressTask:
+            progressTaskCount += 1;
+            break;
+          case TaskStatus.canceledTask:
+            canceledTaskCount += 1;
+            break;
+          case TaskStatus.completedTask:
+            completedTaskCount += 1;
+            break;
+        }
+      });
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Task status updated to $status'),
