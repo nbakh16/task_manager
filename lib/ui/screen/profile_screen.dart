@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -46,13 +47,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   File? image;
+  String? base64String;
+  String baseUrlBase64 = "data:image/jpeg;base64,";
   Future pickImage(ImageSource imageSource) async {
     try {
-      final image = await ImagePicker().pickImage(source: imageSource);
-      if (image == null) return;
+      final pickedImage = await ImagePicker().pickImage(source: imageSource, imageQuality: 60);
+      if (pickedImage == null) return;
 
-      final imageTemp = File(image.path);
-      this.image = imageTemp;
+      image = File(pickedImage.path);
+
+      List<int> imageBytes = await image!.readAsBytes();
+      base64String = base64Encode(imageBytes);
       setState(() {});
     } on PlatformException catch(e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -66,7 +71,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if(!_formKey.currentState!.validate()) {
       return;
     }
-    FocusScope.of(context).unfocus();
+    Navigator.pop(context);
+    print('>>>> $base64String');
 
     _isLoading = true;
     if(mounted) {
@@ -78,7 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       "firstName": _firstNameTEController.text.trim(),
       "lastName": _lastNameTEController.text.trim(),
       "mobile": _mobileTEController.text.trim(),
-      // "photo": image?.toString().split(' ').last.replaceAll("'", "") ?? AuthUtility.userInfo.data?.photo ?? ""
+      "photo": base64String ?? AuthUtility.userInfo.data?.photo ?? ""
     };
     final NetworkResponse response = await NetworkCaller().postRequest(Urls.profileUpdateUrl, requestBody);
 
@@ -92,8 +98,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       userData.lastName = _lastNameTEController.text.trim();
       userData.mobile = _mobileTEController.text.trim();
       AuthUtility.updateUserInfo(userData);
-
-      Navigator.pop(context);
 
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Profile updated!'),

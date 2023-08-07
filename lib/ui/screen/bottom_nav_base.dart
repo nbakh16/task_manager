@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
@@ -289,19 +292,33 @@ class _BottomNavBaseState extends State<BottomNavBase> {
     );
   }
 
+  // Assuming you have received the base64String from the API response
+  String? base64String = AuthUtility.userInfo.data?.photo ?? '';
+
   Padding profilePicture(BuildContext context) {
+    // Decode the base64String to binary image data
+    List<int> imageBytes = base64Decode(base64String!);
+
+    // Create an Image.memory widget using the imageBytes
+    Widget imageWidget = Image.memory(
+      Uint8List.fromList(imageBytes),
+      fit: BoxFit.cover,
+      height: 50, width: 50,
+    );
+
     return Padding(
       padding: const EdgeInsets.all(3.0),
-      child: CircleAvatar(
-        foregroundImage: NetworkImage(AuthUtility.userInfo.data?.photo ?? ''),
-        // foregroundImage: NetworkImage('https://images.unsplash.com/photo-1575936123452-b67c3203c357'),
-        onForegroundImageError: (_, __) {
-          return;
-        },
-        child: Text('${AuthUtility.userInfo.data?.firstName![0]}',
-          style: Theme.of(context).primaryTextTheme.titleLarge,
-        ),
-      ),
+      child: imageWidget,
+      // child: CircleAvatar(
+      //   foregroundImage: NetworkImage(AuthUtility.userInfo.data?.photo ?? ''),
+      //   // foregroundImage: NetworkImage('https://images.unsplash.com/photo-1575936123452-b67c3203c357'),
+      //   onForegroundImageError: (_, __) {
+      //     return;
+      //   },
+      //   child: Text('${AuthUtility.userInfo.data?.firstName![0]}',
+      //     style: Theme.of(context).primaryTextTheme.titleLarge,
+      //   ),
+      // ),
     );
   }
 
