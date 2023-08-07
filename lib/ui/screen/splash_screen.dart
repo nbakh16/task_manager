@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/utils/assets_utils.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
 import 'package:task_manager/ui/screen/bottom_nav_base.dart';
 import 'package:task_manager/ui/screen/login_screen.dart';
@@ -43,11 +44,19 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ScreenBackground(
-        child: Text('Task\nManager', textAlign: TextAlign.center,
-          style: Theme.of(context).primaryTextTheme.titleLarge!.copyWith(
-            color: mainColor,
-            fontSize: MediaQuery.sizeOf(context).width * 0.125
-          )
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(AssetsUtils.appLogoPNG,
+                width: MediaQuery.sizeOf(context).width * 0.2
+            ),
+            Text('Task Manager', textAlign: TextAlign.center,
+              style: Theme.of(context).primaryTextTheme.titleLarge!.copyWith(
+                color: mainColor,
+                fontSize: MediaQuery.sizeOf(context).width * 0.075
+              )
+            ),
+          ],
         ),
       ),
     );

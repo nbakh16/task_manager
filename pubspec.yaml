@@ -39,7 +39,7 @@ flutter:
 flutter_native_splash:
   android: true
 
-  background_image: "assets/images/background-splash.png"
+  color: "#21BF73"
   image: "assets/images/app-logo.png"
 
   #dart run flutter_native_splash:create
