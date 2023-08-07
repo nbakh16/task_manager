@@ -9,7 +9,9 @@ import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utils/colors.dart';
 import '../../data/utils/urls.dart';
+import '../widgets/custom_loading.dart';
 import '../widgets/screen_background.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -20,13 +22,19 @@ class ProfileScreen extends StatefulWidget {
 //TODO: change password option only when user's current password matches
 class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _passwordFormKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  bool _isPasswordChanging = false;
 
   UserData userData = AuthUtility.userInfo.data!;
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _firstNameTEController = TextEditingController();
   final TextEditingController _lastNameTEController = TextEditingController();
   final TextEditingController _mobileTEController = TextEditingController();
+
+  final TextEditingController _currentPasswordTEController = TextEditingController();
+  final TextEditingController _newPasswordTEController = TextEditingController();
+  final TextEditingController _newConfirmPasswordTEController = TextEditingController();
 
   @override
   void initState() {
@@ -99,6 +107,65 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await AuthUtility.getUserInfo();
   }
 
+  Future<void> changePassword() async {
+    if(!_passwordFormKey.currentState!.validate()) {
+      return;
+    }
+    FocusScope.of(context).unfocus();
+
+    _isPasswordChanging = true;
+    if(mounted) {
+      setState(() {});
+    }
+
+    Map<String, dynamic> loginRequestBody = {
+      "email":AuthUtility.userInfo.data!.email,
+      "password":_currentPasswordTEController.text
+    };
+
+    final NetworkResponse loginResponse = await NetworkCaller().postRequest(Urls.loginUrl, loginRequestBody, onProfileScreen: true);
+
+    if(loginResponse.isSuccess) {
+      Map<String, dynamic> requestBody = {
+        "password":_newPasswordTEController.text,
+      };
+
+      final NetworkResponse response = await NetworkCaller().postRequest(Urls.profileUpdateUrl, requestBody);
+
+      if(response.isSuccess && mounted) {
+        Navigator.pop(context);
+
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Password updated!'),
+          backgroundColor: mainColor,
+        ));
+      }
+      else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Failed to update profile!'),
+          backgroundColor: Colors.red,
+        ));
+      }
+    }
+    else {
+      if (mounted) {
+        Fluttertoast.showToast(
+                  msg: "Wrong current password",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0
+              );
+      }
+    }
+
+    _isPasswordChanging = false;
+    if(mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,9 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 35),
                       child: InkWell(
-                        onTap: () {
-                          _showBottomSheet(context);
-                        },
+                        onTap: () => _imageSelectBottomSheet(context),
                         child: CircleAvatar(
                           minRadius: 35,
                           maxRadius: 55,
@@ -219,10 +284,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Visibility(
                 visible: _isLoading == false,
                 replacement: const Center(child: CircularProgressIndicator()),
-                child: ElevatedButton(
-                  // onPressed: updateProfile,
-                  onPressed: updateProfile,
-                  child: const Text('Update'),
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      // onPressed: updateProfile,
+                      onPressed: updateProfile,
+                      child: const Text('Update'),
+                    ),
+                    const SizedBox(height: 6.0,),
+                    TextButton(
+                      onPressed: () {
+                        _changePasswordBottomSheet();
+                      },
+                      child: const Text('Change Password'),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -232,7 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _showBottomSheet(BuildContext context) {
+  void _imageSelectBottomSheet(BuildContext context) {
     showModalBottomSheet(
       barrierColor: mainColor.withOpacity(0.15),
       context: context,
@@ -266,5 +342,121 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       },
     );
+  }
+
+  void _changePasswordBottomSheet() {
+    showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+                top: Radius.circular(16.0)
+            )),
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 18,
+                  right: 18,
+                  left: 18,
+                  top: 18),
+              child: Form(
+                key: _passwordFormKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                              'Change Password',
+                              style: Theme.of(context).primaryTextTheme.titleLarge
+                          ),
+                          IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon: Icon(Icons.cancel_outlined,
+                                color: Colors.red.shade300,
+                              )
+                          )
+                        ],
+                      ),
+                    ),
+                    TextFormField(
+                      controller: _currentPasswordTEController,
+                      decoration: const InputDecoration(
+                          hintText: 'Current Password',
+                          labelText: 'Current Password'
+                      ),
+                      textInputAction: TextInputAction.next,
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      validator: (String? value) {
+                        if(value?.isEmpty ?? true) {
+                          return 'Fill current password';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 30,),
+                    TextFormField(
+                      controller: _newPasswordTEController,
+                      decoration: const InputDecoration(
+                        hintText: 'New Password',
+                        labelText: 'New Password',
+                      ),
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      textInputAction: TextInputAction.next,
+                      validator: (String? value) {
+                        if(value?.isEmpty ?? true) {
+                          return 'Please enter New Password!';
+                        }
+                        if(value!.length < 8) {
+                          return 'Password length must be 8 or more!';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 10.0,),
+                    TextFormField(
+                      controller: _newConfirmPasswordTEController,
+                      decoration: const InputDecoration(
+                        hintText: 'Confirm New Password',
+                        labelText: 'Confirm New Password',
+                      ),
+                      obscureText: true,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      textInputAction: TextInputAction.done,
+                      validator: (String? value) {
+                        if(value?.isEmpty ?? true) {
+                          return 'Please confirm New Password!';
+                        }
+                        if(value! != _newPasswordTEController.text) {
+                          return "Password didn't match!";
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16,),
+                    Visibility(
+                      visible: _isPasswordChanging == false,
+                      replacement: const CustomLoading(),
+                      child: ElevatedButton(
+                        onPressed: changePassword,
+                        child: const Text('Proceed'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 }
