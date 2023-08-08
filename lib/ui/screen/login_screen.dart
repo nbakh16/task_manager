@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/models/login_model.dart';
+import 'package:task_manager/data/utils/assets_utils.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/screen/bottom_nav_base.dart';
@@ -86,6 +87,8 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Align(alignment: Alignment.center, child: Image.asset(AssetsUtils.appLogoPNG, width: 64)),
+              SizedBox(height: 16),
               Text('Get Started With',
                 textAlign: TextAlign.start,
                 style: Theme.of(context).primaryTextTheme.titleLarge,
