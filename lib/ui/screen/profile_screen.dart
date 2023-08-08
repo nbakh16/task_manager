@@ -212,12 +212,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: CircleAvatar(
                           minRadius: 35,
                           maxRadius: 55,
-                          foregroundImage: _getForegroundImage(AuthUtility.userInfo.data?.photo, image),
+                          foregroundImage: _getForegroundImage(userData.photo, image),
                             // foregroundImage: NetworkImage('https://images.unsplash.com/photo-1575936123452-b67c3203c357'),
                           onForegroundImageError: (_, __) {
                             return;
                           },
-                          child: Text('${AuthUtility.userInfo.data?.firstName![0]}',
+                          child: Text(userData.firstName![0],
                             style: Theme.of(context).primaryTextTheme.titleLarge,
                           ),
                         ),

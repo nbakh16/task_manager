@@ -277,15 +277,21 @@ class _BottomNavBaseState extends State<BottomNavBase> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('${AuthUtility.userInfo.data?.firstName.toString()} '
-            '${AuthUtility.userInfo.data?.lastName.toString()}',
-            style: Theme.of(context).primaryTextTheme.titleLarge!.copyWith(
-                color: Colors.white
-            )),
-        Text(AuthUtility.userInfo.data?.email.toString() ?? "email@abc.com",
-            style: Theme.of(context).primaryTextTheme.titleSmall!.copyWith(
-                color: mainColor.shade50
-            )),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text('${AuthUtility.userInfo.data?.firstName.toString()} '
+              '${AuthUtility.userInfo.data?.lastName.toString()}',
+              style: Theme.of(context).primaryTextTheme.titleLarge!.copyWith(
+                  color: Colors.white
+              )),
+        ),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(AuthUtility.userInfo.data?.email.toString() ?? "email@abc.com",
+              style: Theme.of(context).primaryTextTheme.titleSmall!.copyWith(
+                  color: mainColor.shade50
+              )),
+        ),
       ],
     );
   }
