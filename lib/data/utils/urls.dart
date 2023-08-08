@@ -6,6 +6,20 @@ class Urls {
   static String signupUrl = '$_baseUrl/registration';
   static String loginUrl = '$_baseUrl/login';
   static String createTaskUrl = '$_baseUrl/createTask';
+  static String deleteTaskUrl = '$_baseUrl/deleteTask/'; //id variable
 
+  static String taskStatusCountUrl = '$_baseUrl/taskStatusCount';
   static String newTasksListUrl = '$_baseUrl/listTaskByStatus/New';
+  static String completedTasksListUrl = '$_baseUrl/listTaskByStatus/Completed';
+  static String progressTasksListUrl = '$_baseUrl/listTaskByStatus/Progress';
+  static String canceledTasksListUrl = '$_baseUrl/listTaskByStatus/Canceled';
+  static String taskStatusUpdateUrl = '$_baseUrl/updateTaskStatus/'; //id //taskStatus
+
+
+  static String recoveryEmailUrl = '$_baseUrl/RecoverVerifyEmail/'; //email address
+  static String recoveryOTPUrl = '$_baseUrl/RecoverVerifyOTP/'; //email address // otp
+  static String setPasswordUrl = '$_baseUrl/RecoverResetPass';
+
+  static String profileUpdateUrl = '$_baseUrl/profileUpdate';
+
 }

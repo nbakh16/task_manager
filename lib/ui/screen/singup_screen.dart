@@ -1,15 +1,14 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
-import 'package:task_manager/data/utils/auth_utility.dart';
-import 'package:task_manager/ui/screen/bottom_nav_base.dart';
-import 'package:task_manager/ui/utils/colors.dart';
+import 'package:task_manager/data/utils/colors.dart';
+import 'package:task_manager/ui/screen/login_screen.dart';
+import 'package:task_manager/ui/widgets/custom_loading.dart';
 
-import '../../data/models/login_model.dart';
 import '../../data/utils/urls.dart';
-import '../utils/assets_utils.dart';
 import '../widgets/screen_background.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -70,13 +69,13 @@ class _SignupScreenState extends State<SignupScreen> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sign up successful!'),
         backgroundColor: mainColor,));
 
-      LoginModel loginModel = LoginModel.fromJson(response.body!);
-      await AuthUtility.saveUserInfo(loginModel);
+      // LoginModel loginModel = LoginModel.fromJson(response.body!);
+      // await AuthUtility.saveUserInfo(loginModel);
 
       if(mounted) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const BottomNavBase()),
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
                 (route) => false
         );
       }
@@ -202,12 +201,12 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(height: 16,),
                 Visibility(
                   visible: _isLoading == false,
-                  replacement: const Center(child: CircularProgressIndicator()),
+                  replacement: const CustomLoading(),
                   child: Column(
                     children: [
                       ElevatedButton(
                         onPressed: userSignup,
-                        child: Image.asset(AssetsUtils.forwardPNG,),
+                        child: const LineIcon.chevronCircleRight(),
                       ),
                       signInButton(context)
                     ],

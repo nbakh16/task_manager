@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/models/login_model.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
+import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/screen/bottom_nav_base.dart';
 import 'package:task_manager/ui/screen/email_verification_screen.dart';
 import 'package:task_manager/ui/screen/singup_screen.dart';
-import 'package:task_manager/ui/utils/assets_utils.dart';
-import 'package:task_manager/ui/utils/colors.dart';
+import 'package:task_manager/ui/widgets/custom_loading.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 import '../../data/models/network_response.dart';
@@ -43,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
       "email":_emailTEController.text.trim(),
       "password":_passwordTEController.text
     };
-    final NetworkResponse response = await NetworkCaller().postRequest(Urls.loginUrl, requestBody);
+    final NetworkResponse response = await NetworkCaller().postRequest(Urls.loginUrl, requestBody, onLoginScreen: true);
 
     _isLoading = false;
     if(mounted) {
@@ -94,7 +95,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _emailTEController,
                 decoration: const InputDecoration(
                   hintText: 'Email',
-                  labelText: 'Email'
+                  labelText: 'Email',
+                  prefixIcon: LineIcon.at()
                 ),
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
@@ -111,6 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: InputDecoration(
                   hintText: 'Password',
                   labelText: 'Password',
+                  prefixIcon: const LineIcon.key(),
                   suffixIcon: IconButton(
                     onPressed: (){
                       _isObscureText = !_isObscureText;
@@ -131,21 +134,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   if(value?.isEmpty ?? true) {
                     return 'Please enter Password!';
                   }
-                  if(value!.length < 8) {
-                    return 'Password length must be 8 or more!';
-                  }
                   return null;
                 },
               ),
               const SizedBox(height: 16,),
               Visibility(
                 visible: _isLoading == false,
-                replacement: const Center(child: CircularProgressIndicator(),),
+                replacement: const CustomLoading(),
                 child: Column(
                   children: [
                     ElevatedButton(
                       onPressed: loginUser,
-                      child: Image.asset(AssetsUtils.forwardPNG,),
+                      child: const LineIcon.chevronCircleRight()
                     ),
                     forgotPasswordButton(context),
                     signUpButton(context)
@@ -170,9 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ));
         },
         child: Text('Forgot Password?',
-          style: TextStyle(
-              color: Colors.black.withOpacity(0.35)
-          ),
+          style: Theme.of(context).primaryTextTheme.displaySmall
         ),
       ),
     );

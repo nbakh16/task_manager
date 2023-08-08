@@ -4,18 +4,19 @@ class SummaryCard extends StatelessWidget {
   const SummaryCard({
     required this.taskCount,
     required this.taskType,
-    super.key,
+    this.textColor,
+    super.key
   });
 
   final int taskCount;
   final String taskType;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Card(
         elevation: 4,
-        color: Colors.white,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8))
         ),
@@ -26,13 +27,16 @@ class SummaryCard extends StatelessWidget {
             children: [
               Text(taskCount.toString(),
                 style: Theme.of(context).primaryTextTheme.titleLarge?.copyWith(
-                  fontSize: 20
+                  fontSize: 20, color: textColor
                 )
               ),
-              Text(taskType,
-                style: Theme.of(context).primaryTextTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w500
-                )
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(taskType,
+                  style: Theme.of(context).primaryTextTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w500, color: textColor
+                  )
+                ),
               ),
             ],
           ),

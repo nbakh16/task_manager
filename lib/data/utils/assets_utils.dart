@@ -5,7 +5,5 @@ class AssetsUtils {
   static const String backgroundSVG = '$_imagesPath/background.svg';
   static const String logoSVG = '$_imagesPath/logo.svg';
   static const String ostadLogoSVG = '$_imagesPath/ostad-logo.svg';
-
-  static const String _iconsPath = 'assets/icons';
-  static const String forwardPNG = '$_iconsPath/forward.png';
+  static const String appLogoPNG = '$_imagesPath/app-logo.png';
 }

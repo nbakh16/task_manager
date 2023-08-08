@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:task_manager/data/utils/assets_utils.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
 import 'package:task_manager/ui/screen/bottom_nav_base.dart';
 import 'package:task_manager/ui/screen/login_screen.dart';
-import 'package:task_manager/ui/utils/assets_utils.dart';
-import 'package:task_manager/ui/utils/colors.dart';
+import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -19,7 +18,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    navigateToNextPage();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      navigateToNextPage();
+    });
   }
 
   void navigateToNextPage() {
@@ -43,20 +44,16 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ScreenBackground(
-        child: Stack(
-          alignment: Alignment.center,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Opacity(
-              opacity: 0.1,
-              child: SvgPicture.asset(AssetsUtils.ostadLogoSVG,
-                width: MediaQuery.sizeOf(context).width * 0.85,
-                fit: BoxFit.scaleDown,
-              ),
+            Image.asset(AssetsUtils.appLogoPNG,
+                width: MediaQuery.sizeOf(context).width * 0.2
             ),
-            Text('Task\nManager', textAlign: TextAlign.center,
+            Text('Task Manager', textAlign: TextAlign.center,
               style: Theme.of(context).primaryTextTheme.titleLarge!.copyWith(
                 color: mainColor,
-                fontSize: MediaQuery.sizeOf(context).width * 0.125
+                fontSize: MediaQuery.sizeOf(context).width * 0.075
               )
             ),
           ],

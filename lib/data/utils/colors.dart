@@ -9,8 +9,8 @@ const MaterialColor mainColor = MaterialColor(_mainColorPrimaryValue, <int, Colo
   500: Color(_mainColorPrimaryValue),
   600: Color(0xFF1DB96B),
   700: Color(0xFF18B160),
-  800: Color(0xFF14A956),
-  900: Color(0xFF0B9B43),
+  800: Color(0xFF0C9B4B),
+  900: Color(0xFF036C2E),
 });
 const int _mainColorPrimaryValue = 0xFF21BF73;
 
@@ -23,6 +23,6 @@ const MaterialColor mainColorAccent = MaterialColor(_mainColorAccentValue, <int,
 const int _mainColorAccentValue = 0xFF96FFBA;
 
 const Color newTaskColor = Colors.blueAccent;
-const Color progressTaskColor = Color(0xFFFF0090);
-const Color canceledTaskColor = Color(0xFFDC143C);
+const Color progressTaskColor = Color(0xFFDEBD12);
+const Color canceledTaskColor = Color(0xFFD00830);
 const Color completedTaskColor = mainColor;
