@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:task_manager/data/utils/auth_utility.dart';
 import '../../data/models/login_model.dart';
 import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
+import '../../data/utils/base64_image.dart';
 import '../../data/utils/colors.dart';
 import '../../data/utils/urls.dart';
 import '../widgets/custom_alert_dialog.dart';
@@ -48,7 +48,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   File? image;
   String? base64String;
-  String baseUrlBase64 = "data:image/jpeg;base64,";
   Future pickImage(ImageSource imageSource) async {
     try {
       final pickedImage = await ImagePicker().pickImage(source: imageSource, imageQuality: 60);
@@ -56,8 +55,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       image = File(pickedImage.path);
 
-      List<int> imageBytes = await image!.readAsBytes();
-      base64String = base64Encode(imageBytes);
+      base64String = await Base64Image.base64EncodedString(image);
+
       setState(() {});
     } on PlatformException catch(e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -72,7 +71,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return;
     }
     Navigator.pop(context);
-    print('>>>> $base64String');
 
     _isLoading = true;
     if(mounted) {
@@ -214,11 +212,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: CircleAvatar(
                           minRadius: 35,
                           maxRadius: 55,
-                          foregroundImage: image != null
-                              ? FileImage(image!)
-                              : NetworkImage(AuthUtility.userInfo.data?.photo ?? '') as ImageProvider,
-                          // foregroundImage: NetworkImage(AuthUtility.userInfo.data?.photo ?? ''),
-                          // foregroundImage: NetworkImage('https://images.unsplash.com/photo-1575936123452-b67c3203c357'),
+                          foregroundImage: _getForegroundImage(AuthUtility.userInfo.data?.photo, image),
+                            // foregroundImage: NetworkImage('https://images.unsplash.com/photo-1575936123452-b67c3203c357'),
                           onForegroundImageError: (_, __) {
                             return;
                           },
@@ -330,6 +325,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       )
     );
+  }
+
+  ImageProvider<Object> _getForegroundImage(String? photoUrl, File? image) {
+    if (image != null) {
+      return FileImage(image);
+    } else if (Base64Image().isBase64String(photoUrl)) {
+      return Base64Image.imageFromBase64String();
+    } else {
+      return NetworkImage(photoUrl ?? '');
+    }
   }
 
   void _imageSelectBottomSheet(BuildContext context) {
