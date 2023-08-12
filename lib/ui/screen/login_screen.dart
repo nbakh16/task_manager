@@ -88,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Align(alignment: Alignment.center, child: Image.asset(AssetsUtils.appLogoPNG, width: 64)),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text('Get Started With',
                 textAlign: TextAlign.start,
                 style: Theme.of(context).primaryTextTheme.titleLarge,

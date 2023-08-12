@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
@@ -11,7 +14,6 @@ import 'package:task_manager/ui/widgets/custom_alert_dialog.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
-import '../../data/utils/base64_image.dart';
 import '../../data/utils/task_status.dart';
 import '../../data/utils/urls.dart';
 import '../widgets/custom_loading.dart';
@@ -80,9 +82,21 @@ class _BottomNavBaseState extends State<BottomNavBase> {
   }
 
 
+  String base64ImageString = AuthUtility.userInfo.data!.photo!;
+  Image? imageWidget;
 
   @override
   Widget build(BuildContext context) {
+    if (base64ImageString.isNotEmpty) {
+      List<int> imageBytes = base64Decode(base64ImageString);
+      imageWidget = Image.memory(
+        Uint8List.fromList(imageBytes),
+        fit: BoxFit.cover,
+      );
+    } else {
+      imageWidget = Image.asset('assets/images/no-pp.png');
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: profileSummary(context),
@@ -301,12 +315,7 @@ class _BottomNavBaseState extends State<BottomNavBase> {
       padding: const EdgeInsets.all(4.0),
       child: CircleAvatar(
         radius: 28,
-        foregroundImage: Base64Image().isBase64String(AuthUtility.userInfo.data?.photo)
-            ? Base64Image.imageFromBase64String()
-            : NetworkImage(AuthUtility.userInfo.data?.photo ?? ''),
-        child: Text('${AuthUtility.userInfo.data?.firstName![0]}',
-          style: Theme.of(context).primaryTextTheme.titleLarge,
-        ),
+        foregroundImage: imageWidget?.image,
       ),
     );
   }
