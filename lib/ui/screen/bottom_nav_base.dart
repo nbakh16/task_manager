@@ -1,9 +1,7 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
+import 'package:task_manager/data/utils/base64_image.dart';
 import 'package:task_manager/data/utils/tasks_screen_info.dart';
 import 'package:task_manager/data/utils/theme_utility.dart';
 import 'package:task_manager/ui/screen/profile_screen.dart';
@@ -81,22 +79,8 @@ class _BottomNavBaseState extends State<BottomNavBase> {
     }
   }
 
-
-  String base64ImageString = AuthUtility.userInfo.data!.photo!;
-  Image? imageWidget;
-
   @override
   Widget build(BuildContext context) {
-    if (base64ImageString.isNotEmpty) {
-      List<int> imageBytes = base64Decode(base64ImageString);
-      imageWidget = Image.memory(
-        Uint8List.fromList(imageBytes),
-        fit: BoxFit.cover,
-      );
-    } else {
-      imageWidget = Image.asset('assets/images/no-pp.png');
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: profileSummary(context),
@@ -182,11 +166,42 @@ class _BottomNavBaseState extends State<BottomNavBase> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          profilePicture(context),
-          const SizedBox(width: 6.0,),
+          profilePicture(),
+          const SizedBox(width: 12.0,),
           appBarTitle(context),
         ],
       ),
+    );
+  }
+
+  Column appBarTitle(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text('${AuthUtility.userInfo.data?.firstName.toString()} '
+              '${AuthUtility.userInfo.data?.lastName.toString()}',
+              style: Theme.of(context).primaryTextTheme.titleLarge!.copyWith(
+                  color: Colors.white
+              )),
+        ),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(AuthUtility.userInfo.data?.email.toString() ?? "email@abc.com",
+              style: Theme.of(context).primaryTextTheme.titleSmall!.copyWith(
+                  color: mainColor.shade50
+              )),
+        ),
+      ],
+    );
+  }
+
+  CircleAvatar profilePicture() {
+    String userPhoto = AuthUtility.userInfo.data!.photo!;
+    return CircleAvatar(
+      radius: 25,
+      foregroundImage: Base64Image.getBase64Image(userPhoto),
     );
   }
 
@@ -285,39 +300,6 @@ class _BottomNavBaseState extends State<BottomNavBase> {
             ),
           );
         });
-  }
-
-  Column appBarTitle(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text('${AuthUtility.userInfo.data?.firstName.toString()} '
-              '${AuthUtility.userInfo.data?.lastName.toString()}',
-              style: Theme.of(context).primaryTextTheme.titleLarge!.copyWith(
-                  color: Colors.white
-              )),
-        ),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(AuthUtility.userInfo.data?.email.toString() ?? "email@abc.com",
-              style: Theme.of(context).primaryTextTheme.titleSmall!.copyWith(
-                  color: mainColor.shade50
-              )),
-        ),
-      ],
-    );
-  }
-
-  Padding profilePicture(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: CircleAvatar(
-        radius: 28,
-        foregroundImage: imageWidget?.image,
-      ),
-    );
   }
 
   Future<dynamic> signOutShowDialog(BuildContext context) {

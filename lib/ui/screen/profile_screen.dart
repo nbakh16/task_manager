@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -192,21 +191,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  String base64ImageString = AuthUtility.userInfo.data!.photo!;
-  Image? imageWidget;
-
   @override
   Widget build(BuildContext context) {
-    if (base64ImageString.isNotEmpty) {
-      List<int> imageBytes = base64Decode(base64ImageString);
-      imageWidget = Image.memory(
-        Uint8List.fromList(imageBytes),
-        fit: BoxFit.cover,
-      );
-    } else {
-      imageWidget = Image.asset('assets/images/no-pp.png');
-    }
-
     return Scaffold(
       appBar: AppBar(title: const Text('My Profile'),),
       body: ScreenBackground(
@@ -225,16 +211,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onTap: () => _imageSelectBottomSheet(context),
                         child: CircleAvatar(
                           minRadius: 35,
-                          maxRadius: 55,
-                          foregroundImage: image != null ? FileImage(image!) : imageWidget?.image,
-                            // foregroundImage: NetworkImage('https://images.unsplash.com/photo-1575936123452-b67c3203c357'),
-                          onForegroundImageError: (_, __) {
-                            return;
-                          },
-                          child: Text(userData.firstName![0],
-                            style: Theme.of(context).primaryTextTheme.titleLarge,
+                          maxRadius: 65,
+                          foregroundImage: image != null
+                                ? FileImage(image!)
+                                : Base64Image.getBase64Image(userData.photo!),
                           ),
-                        ),
                       ),
                     ),
                   ),
@@ -339,16 +320,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       )
     );
-  }
-
-  ImageProvider<Object> _getForegroundImage(String? photoUrl, File? image) {
-    if (image != null) {
-      return FileImage(image);
-    } else if (Base64Image().isBase64String(photoUrl)) {
-      return Base64Image.imageFromBase64String();
-    } else {
-      return NetworkImage(photoUrl ?? '');
-    }
   }
 
   void _imageSelectBottomSheet(BuildContext context) {
