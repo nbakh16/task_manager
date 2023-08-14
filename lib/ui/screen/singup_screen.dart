@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/services/network_caller.dart';
@@ -95,6 +96,9 @@ class _SignupScreenState extends State<SignupScreen> {
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              children: AnimateList(
+              interval: 30.ms,
+              effects: const [ScaleEffect()],
               children: [
                 Text('Join With Us',
                   textAlign: TextAlign.start,
@@ -212,7 +216,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ],
                   ),
                 ),
-              ],
+              ],)
             ),
           ),
         )

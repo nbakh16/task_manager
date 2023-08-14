@@ -17,14 +17,17 @@ class Base64Image {
     return Image.memory(base64Decode(base64String), fit: BoxFit.cover,).image;
   }
 
-  //check if the received image is in base64 or not
-  static bool isBase64String(String? str) {
-    if (str == null) return false;
-    final RegExp base64Regex = RegExp(
-        r'^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$');
-    return base64Regex.hasMatch(str);
+  //check if the received string is in base64 or not
+  static bool isBase64String(String str) {
+    try {
+      base64.decode(str);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
+  //get the image for UI
   static ImageProvider<Object> getBase64Image(String base64String) {
     if (base64String.isNotEmpty) {
       if(isBase64String(base64String)) {

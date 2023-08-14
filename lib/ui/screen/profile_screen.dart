@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
 import '../../data/models/login_model.dart';
@@ -50,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? base64String;
   Future pickImage(ImageSource imageSource) async {
     try {
-      final pickedImage = await ImagePicker().pickImage(source: imageSource, imageQuality: 60);
+      final pickedImage = await ImagePicker().pickImage(source: imageSource, imageQuality: 30);
       if (pickedImage == null) return;
 
       image = File(pickedImage.path);
@@ -200,6 +201,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            children: AnimateList(
+            interval: 60.ms,
+            effects: const [ScaleEffect()],
             children: [
               Stack(
                 alignment: Alignment.bottomCenter,
@@ -315,7 +319,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
-            ],
+            ],)
           ),
         ),
       )

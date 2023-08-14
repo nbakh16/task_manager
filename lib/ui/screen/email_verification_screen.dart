@@ -35,7 +35,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       setState(() {});
     }
 
-    final String responseUrl = Urls.recoveryEmailUrl + _emailTEController.text;
+    final String responseUrl = Urls.recoveryEmailUrl(_emailTEController.text);
     final NetworkResponse response = await NetworkCaller().getRequest(responseUrl);
 
     Map<String, dynamic> decodedResponse = jsonDecode(jsonEncode(response.body));

@@ -147,10 +147,6 @@ class _BottomNavBaseState extends State<BottomNavBase> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        // onPressed: () {
-        //   Navigator.push(context,
-        //       MaterialPageRoute(builder: (context) => const CreateTaskScreen()));
-        // },
         onPressed: createTaskModalBottomSheet,
         child: const Icon(Icons.add),
       ),

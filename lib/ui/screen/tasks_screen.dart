@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/models/task_status_count_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
@@ -14,8 +15,8 @@ import '../../data/utils/urls.dart';
 import '../widgets/custom_alert_dialog.dart';
 import '../widgets/custom_loading.dart';
 import '../widgets/no_task_available_widget.dart';
-import '../widgets/summary_card.dart';
 import '../widgets/task_card.dart';
+import '../widgets/task_summary_row.dart';
 
 class TasksScreen extends StatefulWidget {
   const TasksScreen(this.tasksScreenInfo, {super.key});
@@ -137,8 +138,13 @@ class _TasksScreenState extends State<TasksScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                summaryRow(),
-                Visibility(
+                TaskSummaryRow(
+                newTaskCount: newTaskCount,
+                progressTaskCount: progressTaskCount,
+                canceledTaskCount: canceledTaskCount,
+                completedTaskCount: completedTaskCount,
+              ),
+              Visibility(
                   visible: _taskModel.taskData?.isNotEmpty ?? false,
                   replacement: const NoTaskAvailableWarning(),
                   child: Expanded(
@@ -150,17 +156,20 @@ class _TasksScreenState extends State<TasksScreen> {
                           physics: const AlwaysScrollableScrollPhysics(),
                           itemCount: _taskModel.taskData?.length ?? 0,
                           itemBuilder: (context, index) {
-                            return TaskCard(
-                              taskData: _taskModel.taskData![index],
-                              onEdit: () {
-                                editTaskModalBottomSheet(index);
-                              },
-                              onDelete: () {
-                                _isTaskDeleted = false;
+                            return Animate(
+                              effects: const [FlipEffect()],
+                              child: TaskCard(
+                                taskData: _taskModel.taskData![index],
+                                onEdit: () {
+                                  editTaskModalBottomSheet(index);
+                                },
+                                onDelete: () {
+                                  _isTaskDeleted = false;
 
-                                deleteTaskShowDialog(context, index);
-                              },
-                              chipColor: widget.tasksScreenInfo.chipColor,
+                                  deleteTaskShowDialog(context, index);
+                                },
+                                chipColor: widget.tasksScreenInfo.chipColor,
+                              ),
                             );
                           }),
                     ),
@@ -171,33 +180,6 @@ class _TasksScreenState extends State<TasksScreen> {
           ),
         ),
       )
-    );
-  }
-
-  Row summaryRow() {
-    return Row(
-      children: [
-        SummaryCard(
-          taskCount: newTaskCount,
-          taskType: 'New Task',
-          textColor: newTaskColor,
-        ),
-        SummaryCard(
-          taskCount: progressTaskCount,
-          taskType: 'Progress',
-          textColor: progressTaskColor,
-        ),
-        SummaryCard(
-          taskCount: canceledTaskCount,
-          taskType: 'Canceled',
-          textColor: canceledTaskColor,
-        ),
-        SummaryCard(
-          taskCount: completedTaskCount,
-          taskType: 'Completed',
-          textColor: completedTaskColor,
-        ),
-      ],
     );
   }
 
@@ -397,7 +379,7 @@ class _TasksScreenState extends State<TasksScreen> {
   }
 
   Future<void> updateTaskStatus(String id, String status) async {
-    final NetworkResponse response = await NetworkCaller().getRequest('${Urls.taskStatusUpdateUrl}$id/$status');
+    final NetworkResponse response = await NetworkCaller().getRequest(Urls.taskStatusUpdateUrl(id, status));
     final Map<String, Color> colorsMap = {
       TaskStatus.newTask: newTaskColor,
       TaskStatus.progressTask: progressTaskColor,
@@ -458,7 +440,7 @@ class _TasksScreenState extends State<TasksScreen> {
   }
 
   Future<void> deleteTask(String id) async {
-    final NetworkResponse response = await NetworkCaller().getRequest('${Urls.deleteTaskUrl}$id');
+    final NetworkResponse response = await NetworkCaller().getRequest(Urls.deleteTaskUrl(id));
 
     if(response.isSuccess && mounted) {
       Navigator.pop(context);
