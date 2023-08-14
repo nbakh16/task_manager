@@ -157,7 +157,7 @@ class _TasksScreenState extends State<TasksScreen> {
                           itemCount: _taskModel.taskData?.length ?? 0,
                           itemBuilder: (context, index) {
                             return Animate(
-                              effects: const [FlipEffect()],
+                              effects: const [FlipEffect(curve: Curves.easeInOut)],
                               child: TaskCard(
                                 taskData: _taskModel.taskData![index],
                                 onEdit: () {
@@ -210,8 +210,11 @@ class _TasksScreenState extends State<TasksScreen> {
                 child: Form(
                   key: _formKey,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
+                    children: AnimateList(
+                    interval: 50.ms,
+                    effects: const [ScaleEffect(curve: Curves.easeInOut)],
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -369,7 +372,7 @@ class _TasksScreenState extends State<TasksScreen> {
                           ],
                         ),
                       ),
-                    ],
+                    ],)
                   ),
                 ),
               ),

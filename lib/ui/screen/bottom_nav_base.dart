@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
 import 'package:task_manager/data/utils/base64_image.dart';
@@ -220,8 +221,11 @@ class _BottomNavBaseState extends State<BottomNavBase> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
+                  children: AnimateList(
+                  interval: 70.ms,
+                  effects: const [ScaleEffect(curve: Curves.easeInOut)],
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -290,7 +294,7 @@ class _BottomNavBaseState extends State<BottomNavBase> {
                         ],
                       ),
                     ),
-                  ],
+                  ],)
                 ),
               ),
             ),

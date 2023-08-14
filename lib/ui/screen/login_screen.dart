@@ -89,7 +89,10 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: AnimateList(
             interval: 50.ms,
-            effects: const [ScaleEffect()],
+              effects: [
+                const ScaleEffect(curve: Curves.easeInOut),
+                ShimmerEffect(delay: 900.ms, color: mainColor.shade100.withOpacity(0.35))
+              ],
             children: [
               Align(alignment: Alignment.center, child: Image.asset(AssetsUtils.appLogoPNG, width: 64)),
               const SizedBox(height: 16),

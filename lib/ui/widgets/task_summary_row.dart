@@ -21,7 +21,7 @@ class TaskSummaryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: AnimateList(
       interval: 100.ms,
-      effects: [SlideEffect(duration: 200.ms)],
+      effects: [SlideEffect(duration: 200.ms, curve: Curves.easeInOut)],
       children: [
         Expanded(
           child: SummaryCard(

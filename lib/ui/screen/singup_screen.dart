@@ -98,7 +98,10 @@ class _SignupScreenState extends State<SignupScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: AnimateList(
               interval: 30.ms,
-              effects: const [ScaleEffect()],
+              effects: [
+                const ScaleEffect(curve: Curves.easeInOut),
+                ShimmerEffect(delay: 1200.ms, color: mainColor.shade100.withOpacity(0.35))
+              ],
               children: [
                 Text('Join With Us',
                   textAlign: TextAlign.start,
