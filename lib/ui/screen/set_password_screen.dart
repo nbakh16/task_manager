@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screen/login_screen.dart';
-
+import 'package:get/get.dart';
 import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utils/colors.dart';
@@ -61,11 +61,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
             backgroundColor: mainColor,
           ));
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const LoginScreen()
-          ));
+          Get.to(()=> const LoginScreen());
         }
         else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -166,9 +162,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
       children: [
         const Text("Have account? "),
         TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: ()=> Get.back(),
           child: const Text('Sign In'),
         ),
       ],

@@ -8,6 +8,7 @@ import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/data/utils/tasks_screen_info.dart';
 import 'package:task_manager/ui/widgets/custom_chip.dart';
+import 'package:get/get.dart';
 
 import '../../data/models/task_model.dart';
 import '../../data/utils/task_status.dart';
@@ -226,7 +227,7 @@ class _TasksScreenState extends State<TasksScreen> {
                                 style: Theme.of(context).primaryTextTheme.titleLarge
                             ),
                             IconButton(
-                                onPressed: () => Navigator.pop(context),
+                                onPressed: () => Get.back(),
                                 icon: Icon(Icons.cancel_outlined,
                                   color: Colors.red.shade300,
                                 )
@@ -364,7 +365,7 @@ class _TasksScreenState extends State<TasksScreen> {
                                 if (_taskModel.taskData![index].status != taskStatus) {
                                   updateTaskStatus(_taskModel.taskData![index].sId!, taskStatus);
                                 } else {
-                                  Navigator.pop(context);
+                                  Get.back();
                                 }
                               },
                               child: const Text('Update Task'),
@@ -393,7 +394,7 @@ class _TasksScreenState extends State<TasksScreen> {
     final Color snackBarColor = colorsMap[status] ?? mainColor;
 
     if(response.isSuccess && mounted) {
-      Navigator.pop(context);
+      Get.back();
 
       setState(() {
         _taskModel.taskData!.removeWhere((element) => element.sId == id);
@@ -446,7 +447,7 @@ class _TasksScreenState extends State<TasksScreen> {
     final NetworkResponse response = await NetworkCaller().getRequest(Urls.deleteTaskUrl(id));
 
     if(response.isSuccess && mounted) {
-      Navigator.pop(context);
+      Get.back();
       setState(() {
         _taskModel.taskData!.removeWhere((element) => element.sId == id);
 

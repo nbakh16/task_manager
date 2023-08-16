@@ -10,6 +10,7 @@ import 'package:task_manager/ui/screen/splash_screen.dart';
 import 'package:task_manager/ui/screen/tasks_screen.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/widgets/custom_alert_dialog.dart';
+import 'package:get/get.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
@@ -68,9 +69,7 @@ class _BottomNavBaseState extends State<BottomNavBase> {
         backgroundColor: newTaskColor,
       ));
 
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => const BottomNavBase()),
-              (route) => false);
+      Get.offAll(() => const BottomNavBase());
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -156,10 +155,7 @@ class _BottomNavBaseState extends State<BottomNavBase> {
 
   InkWell profileSummary(BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const ProfileScreen()));
-      },
+      onTap: () => Get.to(()=> const ProfileScreen()),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -237,7 +233,7 @@ class _BottomNavBaseState extends State<BottomNavBase> {
                             style: Theme.of(context).primaryTextTheme.titleLarge
                           ),
                           IconButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => Get.back(),
                             icon: Icon(Icons.cancel_outlined,
                               color: Colors.red.shade300,
                             )
@@ -326,11 +322,6 @@ class _BottomNavBaseState extends State<BottomNavBase> {
 
   Future<void> signOut() async{
     await AuthUtility.clearUserInfo();
-
-    if(mounted) {
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-          builder: (context) => const SplashScreen()),
-              (route) => false);
-    }
+    Get.offAll(()=> const SplashScreen());
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task_manager/data/utils/colors.dart';
@@ -58,14 +58,10 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
             backgroundColor: mainColor,
           ));
 
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SetPasswordScreen(
-                    emailAddress: widget.emailAddress,
-                    otpCode: _pinCodeTEController.text,
-                  )), (route) => false,
-          );
+          Get.offAll(()=> SetPasswordScreen(
+            emailAddress: widget.emailAddress,
+            otpCode: _pinCodeTEController.text,
+          ));
         }
         else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -152,9 +148,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       children: [
         const Text("Have account? "),
         TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: ()=> Get.back(),
           child: const Text('Sign In'),
         ),
       ],

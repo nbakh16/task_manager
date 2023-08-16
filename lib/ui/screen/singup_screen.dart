@@ -8,6 +8,7 @@ import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/screen/login_screen.dart';
 import 'package:task_manager/ui/widgets/custom_loading.dart';
+import 'package:get/get.dart';
 
 import '../../data/utils/urls.dart';
 import '../widgets/screen_background.dart';
@@ -73,13 +74,7 @@ class _SignupScreenState extends State<SignupScreen> {
       // LoginModel loginModel = LoginModel.fromJson(response.body!);
       // await AuthUtility.saveUserInfo(loginModel);
 
-      if(mounted) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-                (route) => false
-        );
-      }
+      Get.offAll(()=> const LoginScreen());
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sign up failed!'),
@@ -232,9 +227,7 @@ class _SignupScreenState extends State<SignupScreen> {
       children: [
         const Text("Have account? "),
         TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: ()=> Get.back(),
           child: const Text('Sign In'),
         ),
       ],

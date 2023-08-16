@@ -10,6 +10,7 @@ import 'package:task_manager/ui/screen/email_verification_screen.dart';
 import 'package:task_manager/ui/screen/singup_screen.dart';
 import 'package:task_manager/ui/widgets/custom_loading.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
+import 'package:get/get.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
@@ -66,9 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: mainColor,
         ));
 
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => const BottomNavBase()),
-                (route) => false);
+        Get.offAll(()=> const BottomNavBase());
       }
     }
     else {
@@ -172,13 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Center forgotPasswordButton(BuildContext context) {
     return Center(
       child: TextButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const EmailVerificationScreen()
-              ));
-        },
+        onPressed: () => Get.to(()=> const EmailVerificationScreen()),
         child: Text('Forgot Password?',
           style: Theme.of(context).primaryTextTheme.displaySmall
         ),
@@ -192,13 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         const Text("Don't have account? "),
         TextButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SignupScreen()
-                ));
-          },
+          onPressed: ()=> Get.to(()=> const SignupScreen()),
           child: const Text('Sign Up'),
         ),
       ],

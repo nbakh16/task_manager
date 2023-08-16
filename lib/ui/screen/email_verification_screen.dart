@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/models/network_response.dart';
@@ -52,11 +52,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
           backgroundColor: mainColor,
         ));
 
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PinVerificationScreen(emailAddress: _emailTEController.text)
-            ));
+        Get.to(()=> PinVerificationScreen(emailAddress: _emailTEController.text));
       }
       else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -135,9 +131,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       children: [
         const Text("Have account? "),
         TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: ()=> Get.back(),
           child: const Text('Sign In'),
         ),
       ],

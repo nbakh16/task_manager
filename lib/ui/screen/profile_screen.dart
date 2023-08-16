@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -71,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if(!_formKey.currentState!.validate()) {
       return;
     }
-    Navigator.pop(context);
+    Get.back();
 
     _isLoading = true;
     if(mounted) {
@@ -159,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final NetworkResponse response = await NetworkCaller().postRequest(Urls.profileUpdateUrl, requestBody);
 
       if(response.isSuccess && mounted) {
-        Navigator.pop(context);
+        Get.back();
 
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Password updated!'),
@@ -345,7 +345,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: const Text('Gallery'),
               onTap: () {
                 pickImage(ImageSource.gallery);
-                Navigator.of(context).pop();
+                Get.back();
               },
             ),
             ListTile(
@@ -353,7 +353,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: const Text('Camera'),
               onTap: () {
                 pickImage(ImageSource.camera);
-                Navigator.of(context).pop();
+                Get.back();
               },
             ),
           ],
@@ -394,7 +394,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               style: Theme.of(context).primaryTextTheme.titleLarge
                           ),
                           IconButton(
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () => Get.back(),
                               icon: Icon(Icons.cancel_outlined,
                                 color: Colors.red.shade300,
                               )
