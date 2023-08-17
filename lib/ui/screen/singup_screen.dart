@@ -1,16 +1,13 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:line_icons/line_icon.dart';
-import 'package:task_manager/data/models/network_response.dart';
-import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/screen/login_screen.dart';
+import 'package:task_manager/ui/state_managers/signup_controller.dart';
 import 'package:task_manager/ui/widgets/custom_loading.dart';
 import 'package:get/get.dart';
 
-import '../../data/utils/urls.dart';
 import '../widgets/screen_background.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -30,58 +27,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _mobileTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
 
-  bool _isLoading = false;
   bool _isObscureText = true;
-
-  Future<void> userSignup() async {
-    if(!_formKey.currentState!.validate()) {
-      return;
-    }
-    FocusScope.of(context).unfocus();
-
-    _isLoading = true;
-    if(mounted) {
-      setState(() {});
-    }
-
-    Map<String, dynamic> requestBody = {
-      "email": _emailTEController.text.trim(),
-      "firstName": _firstNameTEController.text.trim(),
-      "lastName": _lastNameTEController.text.trim(),
-      "mobile": _mobileTEController.text.trim(),
-      "password": _passwordTEController.text,
-      "photo": ""
-    };
-    final NetworkResponse response =
-        await NetworkCaller().postRequest(Urls.signupUrl, requestBody);
-
-    _isLoading = false;
-    if(mounted) {
-      setState(() {});
-    }
-
-    log(Urls.signupUrl);
-    if(response.isSuccess && mounted) {
-      _emailTEController.clear();
-      _firstNameTEController.clear();
-      _lastNameTEController.clear();
-      _mobileTEController.clear();
-      _passwordTEController.clear();
-
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sign up successful!'),
-        backgroundColor: mainColor,));
-
-      // LoginModel loginModel = LoginModel.fromJson(response.body!);
-      // await AuthUtility.saveUserInfo(loginModel);
-
-      Get.offAll(()=> const LoginScreen());
-    }
-    else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sign up failed!'),
-        backgroundColor: Colors.red,));
-      FocusScope.of(context).unfocus();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +135,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     )
                   ),
                   obscureText: _isObscureText,
-                  onEditingComplete: userSignup,
+                  // onEditingComplete: userSignup,
                   validator: (String? value) {
                     if(value?.isEmpty ?? true) {
                       return 'Please enter Password!';
@@ -201,18 +147,49 @@ class _SignupScreenState extends State<SignupScreen> {
                   },
                 ),
                 const SizedBox(height: 16,),
-                Visibility(
-                  visible: _isLoading == false,
-                  replacement: const CustomLoading(),
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: userSignup,
-                        child: const LineIcon.chevronCircleRight(),
+                GetBuilder<SignupController>(
+                  builder: (signupController) {
+                    return Visibility(
+                      visible: signupController.isLoading == false,
+                      replacement: const CustomLoading(),
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: (){
+                              if(!_formKey.currentState!.validate()) {
+                                return;
+                              }
+                              FocusScope.of(context).unfocus();
+
+                              signupController.userSignup(
+                                _emailTEController.text.trim(),
+                                _firstNameTEController.text.trim(),
+                                _lastNameTEController.text.trim(),
+                                _mobileTEController.text.trim(),
+                                _passwordTEController.text).then((value) {
+                                if(value == true) {
+                                  Get.offAll(()=> const LoginScreen());
+                                  Get.snackbar(
+                                      'Success', 'Sign Up Successful!',
+                                      backgroundColor: mainColor,
+                                      colorText: Colors.white
+                                  );
+                                } else {
+                                  Get.snackbar(
+                                      'Failed', 'Sign Up Failed! Try again.',
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white
+                                  );
+                                }
+                              });
+                            },
+                            child: const LineIcon.chevronCircleRight(),
+                          ),
+                          signInButton(context)
+                        ],
                       ),
-                      signInButton(context)
-                    ],
-                  ),
+                    );
+                  }
                 ),
               ],)
             ),

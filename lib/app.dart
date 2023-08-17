@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/data/utils/theme_utility.dart';
 import 'package:task_manager/ui/screen/splash_screen.dart';
-import 'package:task_manager/ui/state_managers/login_controller.dart';
+import 'package:task_manager/ui/state_managers/controller_binding.dart';
 
 class TaskManagerApp extends StatefulWidget {
   static GlobalKey<NavigatorState> globalKey = GlobalKey<NavigatorState>();
@@ -42,7 +42,6 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
       themeMode: ThemeUtility.isLight ? ThemeMode.light : ThemeMode.dark,
       initialBinding: ControllerBinding(),
       home: const SplashScreen(),
-      // home: BottomNavBase(isLight: isLight, switchTheme: switchTheme),
     );
   }
 
@@ -326,12 +325,4 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
       )
     );
   }
-}
-
-class ControllerBinding extends Bindings{
-  @override
-  void dependencies() {
-    Get.put(LoginController());
-  }
-
 }

@@ -119,7 +119,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Get.snackbar(
                                   'Success', 'Login Successful!',
                                   backgroundColor: mainColor,
-                                  colorText: Colors.white
+                                  colorText: Colors.white,
+                                    borderWidth: 1,
+                                    borderColor: Colors.white
                                 );
                               } else {
                                 Get.snackbar(

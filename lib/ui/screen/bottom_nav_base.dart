@@ -9,11 +9,10 @@ import 'package:task_manager/ui/screen/profile_screen.dart';
 import 'package:task_manager/ui/screen/splash_screen.dart';
 import 'package:task_manager/ui/screen/tasks_screen.dart';
 import 'package:task_manager/data/utils/colors.dart';
+import 'package:task_manager/ui/state_managers/create_task_controller.dart';
 import 'package:task_manager/ui/widgets/custom_alert_dialog.dart';
 import 'package:get/get.dart';
 
-import '../../data/models/network_response.dart';
-import '../../data/services/network_caller.dart';
 import '../../data/utils/task_status.dart';
 import '../../data/utils/urls.dart';
 import '../widgets/custom_loading.dart';
@@ -33,51 +32,6 @@ class _BottomNavBaseState extends State<BottomNavBase> {
 
   final TextEditingController _titleTEController = TextEditingController();
   final TextEditingController _descriptionTEController = TextEditingController();
-
-  bool _isLoading = false;
-
-  Future<void> createTask() async {
-    if(!_formKey.currentState!.validate()) {
-      return;
-    }
-    FocusScope.of(context).unfocus();
-
-    _isLoading = true;
-    if(mounted) {
-      setState(() {});
-    }
-
-    Map<String, dynamic> requestBody = {
-      "title":_titleTEController.text.trim(),
-      "description":_descriptionTEController.text.trim(),
-      "status":TaskStatus.newTask
-    };
-    final NetworkResponse response =
-    await NetworkCaller().postRequest(Urls.createTaskUrl, requestBody);
-
-    _isLoading = false;
-    if(mounted) {
-      setState(() {});
-    }
-
-    if(response.isSuccess && mounted) {
-      _titleTEController.clear();
-      _descriptionTEController.clear();
-
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Task created successfully!'),
-        backgroundColor: newTaskColor,
-      ));
-
-      Get.offAll(() => const BottomNavBase());
-    }
-    else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Task creation failed!'),
-        backgroundColor: Colors.red,
-      ));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -269,7 +223,7 @@ class _BottomNavBaseState extends State<BottomNavBase> {
                       maxLength: 250,
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.done,
-                      onEditingComplete: createTask,
+                      // onEditingComplete: createTask,
                       // validator: (String? value) {
                       //   if(value?.isEmpty ?? true) {
                       //     return 'Description';
@@ -278,17 +232,48 @@ class _BottomNavBaseState extends State<BottomNavBase> {
                       // },
                     ),
                     const SizedBox(height: 16,),
-                    Visibility(
-                      visible: _isLoading == false,
-                      replacement: const CustomLoading(),
-                      child: Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: createTask,
+                    GetBuilder<CreateTaskController>(
+                      builder: (controller) {
+                        return Visibility(
+                          visible: controller.isLoading == false,
+                          replacement: const CustomLoading(),
+                          child: ElevatedButton(
+                            onPressed: (){
+                              if(!_formKey.currentState!.validate()) {
+                                return;
+                              }
+                              FocusScope.of(context).unfocus();
+
+                              controller.createTask(
+                                _titleTEController.text.trim(),
+                                _descriptionTEController.text.trim(),
+                                TaskStatus.newTask
+                              ).then((value) {
+                                if(value == true) {
+                                  _titleTEController.clear();
+                                  _descriptionTEController.clear();
+
+                                  Get.offAll(() => const BottomNavBase());
+                                  Get.snackbar(
+                                    'Success', 'Task created successfully!',
+                                    backgroundColor: mainColor,
+                                    colorText: Colors.white,
+                                    borderWidth: 1,
+                                    borderColor: Colors.white
+                                  );
+                                } else {
+                                  Get.snackbar(
+                                    'Failed', 'Task creation failed!',
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white
+                                  );
+                                }
+                              });
+                            },
                             child: const LineIcon.chevronCircleRight(),
                           ),
-                        ],
-                      ),
+                        );
+                      }
                     ),
                   ],)
                 ),

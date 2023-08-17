@@ -1,21 +1,18 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/models/network_response.dart';
-import 'package:task_manager/data/models/task_status_count_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/data/utils/tasks_screen_info.dart';
+import 'package:task_manager/ui/state_managers/task_summary_controller.dart';
 import 'package:task_manager/ui/widgets/custom_chip.dart';
-import 'package:get/get.dart';
 
-import '../../data/models/task_model.dart';
 import '../../data/utils/task_status.dart';
 import '../../data/utils/urls.dart';
+import '../state_managers/task_controller.dart';
 import '../widgets/custom_alert_dialog.dart';
 import '../widgets/custom_loading.dart';
-import '../widgets/no_task_available_widget.dart';
 import '../widgets/task_card.dart';
 import '../widgets/task_summary_row.dart';
 
@@ -29,96 +26,20 @@ class TasksScreen extends StatefulWidget {
 }
 
 class _TasksScreenState extends State<TasksScreen> {
-  bool _isLoading = false;
-  TaskModel _taskModel = TaskModel();
-
-  int newTaskCount=0, progressTaskCount=0, completedTaskCount=0, canceledTaskCount=0;
-
   bool _isTaskDeleted = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final TaskSummaryController _taskSummaryController = Get.find();
+  final TaskController _taskController = Get.find();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getTasksList();
-      getTaskStatusCount();
+      _taskController.getTasksList(widget.tasksScreenInfo.responseUrl);
+      _taskSummaryController.getTaskStatusCount();
     });
-  }
-
-  Future<void> getTaskStatusCount() async {
-    newTaskCount=0; progressTaskCount=0;
-    completedTaskCount=0; canceledTaskCount=0;
-
-    _isLoading = true;
-    if(mounted) {
-      setState(() {});
-    }
-
-    final NetworkResponse response = await NetworkCaller().getRequest(Urls.taskStatusCountUrl);
-
-    if(response.isSuccess && mounted) {
-      Map<String, dynamic> decodedResponse = jsonDecode(jsonEncode(response.body));
-      List<TaskCountModel> taskStatusAndCountList = (decodedResponse['data'] as List)
-          .map((data) => TaskCountModel.fromJson(data))
-          .toList();
-
-      for (var task in taskStatusAndCountList) {
-        switch(task.sId) {
-          case TaskStatus.newTask:
-            newTaskCount = task.sum ?? 0;
-            break;
-          case TaskStatus.progressTask:
-            progressTaskCount = task.sum ?? 0;
-            break;
-          case TaskStatus.completedTask:
-            completedTaskCount = task.sum ?? 0;
-            break;
-          case TaskStatus.canceledTask:
-            canceledTaskCount = task.sum ?? 0;
-            break;
-        }
-      }
-    }
-    else {
-      if(mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Tasks status count failed!'),
-          backgroundColor: Colors.red,
-        ));
-      }
-    }
-    _isLoading = false;
-    if(mounted) {
-      setState(() {});
-    }
-  }
-
-  Future<void> getTasksList() async {
-    _isLoading = true;
-    if(mounted) {
-      setState(() {});
-    }
-
-    final NetworkResponse response = await NetworkCaller().getRequest(widget.tasksScreenInfo.responseUrl);
-
-    if(response.isSuccess && mounted) {
-      _taskModel = TaskModel.fromJson(response.body!);
-    }
-    else {
-      if(mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Tasks list failed!'),
-          backgroundColor: Colors.red,
-        ));
-      }
-    }
-
-    _isLoading = false;
-    if(mounted) {
-      setState(() {});
-    }
   }
 
   @override
@@ -126,47 +47,52 @@ class _TasksScreenState extends State<TasksScreen> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
-          getTaskStatusCount();
-          getTasksList();
+          _taskSummaryController.getTaskStatusCount();
+          _taskController.getTasksList(widget.tasksScreenInfo.responseUrl);
         },
         child: Padding(
           padding: EdgeInsets.all(MediaQuery.sizeOf(context).width * 0.02),
-          child: Visibility(
-            visible: _isLoading == false,
-            replacement: const CustomLoading(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TaskSummaryRow(
-                newTaskCount: newTaskCount,
-                progressTaskCount: progressTaskCount,
-                canceledTaskCount: canceledTaskCount,
-                completedTaskCount: completedTaskCount,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GetBuilder<TaskSummaryController>(
+                builder: (_) {
+                  if(_taskSummaryController.isLoading) {
+                    return const CustomLoading();
+                  }
+                  return TaskSummaryRow(
+                    newTaskCount: _taskSummaryController.newTaskCount,
+                    progressTaskCount: _taskSummaryController.progressTaskCount,
+                    canceledTaskCount: _taskSummaryController.canceledTaskCount,
+                    completedTaskCount: _taskSummaryController.completedTaskCount,
+                  );
+                }
               ),
-              Visibility(
-                  visible: _taskModel.taskData?.isNotEmpty ?? false,
-                  replacement: const NoTaskAvailableWarning(),
-                  child: Expanded(
+              GetBuilder<TaskController>(
+                builder: (_) {
+                  if(_taskController.isLoading) {
+                    return const CustomLoading();
+                  }
+                  return Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: ListView.builder(
                           shrinkWrap: true,
                           padding: const EdgeInsets.only(bottom: 56),
                           physics: const AlwaysScrollableScrollPhysics(),
-                          itemCount: _taskModel.taskData?.length ?? 0,
+                          itemCount: _taskController.taskModel.taskData?.length ?? 0,
                           itemBuilder: (context, index) {
                             return Animate(
                               effects: const [FlipEffect(curve: Curves.easeInOut)],
                               child: TaskCard(
-                                taskData: _taskModel.taskData![index],
+                                taskData: _taskController.taskModel.taskData![index],
                                 onEdit: () {
                                   editTaskModalBottomSheet(index);
                                 },
                                 onDelete: () {
                                   _isTaskDeleted = false;
-
                                   deleteTaskShowDialog(context, index);
                                 },
                                 chipColor: widget.tasksScreenInfo.chipColor,
@@ -174,10 +100,10 @@ class _TasksScreenState extends State<TasksScreen> {
                             );
                           }),
                     ),
-                  ),
-                )
-              ],
-            ),
+                  );
+                }
+              )
+            ],
           ),
         ),
       )
@@ -188,9 +114,9 @@ class _TasksScreenState extends State<TasksScreen> {
     TextEditingController titleTEController = TextEditingController();
     TextEditingController descriptionTEController = TextEditingController();
 
-    titleTEController.text = _taskModel.taskData?[index].title ?? "";
-    descriptionTEController.text = _taskModel.taskData?[index].description ?? "";
-    String taskStatus = _taskModel.taskData?[index].status ?? 'New';
+    titleTEController.text = _taskController.taskModel.taskData?[index].title ?? "";
+    descriptionTEController.text = _taskController.taskModel.taskData?[index].description ?? "";
+    String taskStatus = _taskController.taskModel.taskData?[index].status ?? 'New';
 
     showModalBottomSheet(
         shape: const RoundedRectangleBorder(
@@ -353,25 +279,17 @@ class _TasksScreenState extends State<TasksScreen> {
                         ],
                       ),
                       const SizedBox(height: 16,),
-                      Visibility(
-                        visible: _isLoading == false,
-                        replacement: const CustomLoading(),
-                        child: Column(
-                          children: [
-                            ElevatedButton(
-                              onPressed: (){
-                                //TODO: edit task api
+                      ElevatedButton(
+                        onPressed: (){
+                          //TODO: edit task api
 
-                                if (_taskModel.taskData![index].status != taskStatus) {
-                                  updateTaskStatus(_taskModel.taskData![index].sId!, taskStatus);
-                                } else {
-                                  Get.back();
-                                }
-                              },
-                              child: const Text('Update Task'),
-                            ),
-                          ],
-                        ),
+                          if (_taskController.taskModel.taskData![index].status != taskStatus) {
+                            updateTaskStatus(_taskController.taskModel.taskData![index].sId!, taskStatus);
+                          } else {
+                            Get.back();
+                          }
+                        },
+                        child: const Text('Update Task'),
                       ),
                     ],)
                   ),
@@ -397,35 +315,35 @@ class _TasksScreenState extends State<TasksScreen> {
       Get.back();
 
       setState(() {
-        _taskModel.taskData!.removeWhere((element) => element.sId == id);
+        _taskController.taskModel.taskData!.removeWhere((element) => element.sId == id);
 
         switch(widget.tasksScreenInfo.taskStatus) {
           case TaskStatus.newTask:
-            newTaskCount -= 1;
+            _taskSummaryController.newTaskCount -= 1;
             break;
           case TaskStatus.progressTask:
-            progressTaskCount -= 1;
+            _taskSummaryController.progressTaskCount -= 1;
             break;
           case TaskStatus.canceledTask:
-            canceledTaskCount -= 1;
+            _taskSummaryController.canceledTaskCount -= 1;
             break;
           case TaskStatus.completedTask:
-            completedTaskCount -= 1;
+            _taskSummaryController.completedTaskCount -= 1;
             break;
         }
 
         switch(status) {
           case TaskStatus.newTask:
-            newTaskCount += 1;
+            _taskSummaryController.newTaskCount += 1;
             break;
           case TaskStatus.progressTask:
-            progressTaskCount += 1;
+            _taskSummaryController.progressTaskCount += 1;
             break;
           case TaskStatus.canceledTask:
-            canceledTaskCount += 1;
+            _taskSummaryController.canceledTaskCount += 1;
             break;
           case TaskStatus.completedTask:
-            completedTaskCount += 1;
+            _taskSummaryController.completedTaskCount += 1;
             break;
         }
       });
@@ -449,20 +367,20 @@ class _TasksScreenState extends State<TasksScreen> {
     if(response.isSuccess && mounted) {
       Get.back();
       setState(() {
-        _taskModel.taskData!.removeWhere((element) => element.sId == id);
+        _taskController.taskModel.taskData!.removeWhere((element) => element.sId == id);
 
         switch(widget.tasksScreenInfo.taskStatus) {
           case TaskStatus.newTask:
-            newTaskCount -= 1;
+            _taskSummaryController.newTaskCount -= 1;
             break;
           case TaskStatus.progressTask:
-            progressTaskCount -= 1;
+            _taskSummaryController.progressTaskCount -= 1;
             break;
           case TaskStatus.canceledTask:
-            canceledTaskCount -= 1;
+            _taskSummaryController.canceledTaskCount -= 1;
             break;
           case TaskStatus.completedTask:
-            completedTaskCount -= 1;
+            _taskSummaryController.completedTaskCount -= 1;
             break;
         }
       });
@@ -489,13 +407,13 @@ class _TasksScreenState extends State<TasksScreen> {
             scale: Curves.easeInOut.transform(anim.value),
             child: CustomAlertDialog(
                 onPress: () {
-                  deleteTask(_taskModel.taskData?[index].sId ?? '');
+                  deleteTask(_taskController.taskModel.taskData?[index].sId ?? '');
                   setState(() {
                     _isTaskDeleted = true;
                   });
                 },
                 title: 'Delete Task',
-                content: 'Deleting task "${_taskModel.taskData?[index].title ?? 'Null'}"',
+                content: 'Deleting task "${_taskController.taskModel.taskData?[index].title ?? 'Null'}"',
                 actionText: 'Confirm'
             ),
           );

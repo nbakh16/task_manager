@@ -1,14 +1,10 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/screen/set_password_screen.dart';
+import 'package:task_manager/ui/state_managers/pin_verification_controller.dart';
 
-import '../../data/models/network_response.dart';
-import '../../data/services/network_caller.dart';
-import '../../data/utils/urls.dart';
 import '../widgets/custom_loading.dart';
 import '../widgets/screen_background.dart';
 
@@ -22,67 +18,9 @@ class PinVerificationScreen extends StatefulWidget {
 }
 
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
-  bool _isLoading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _pinCodeTEController = TextEditingController();
-
-  Future<void> verifyEmailWithPin() async {
-    if(!_formKey.currentState!.validate()) {
-      return;
-    }
-    FocusScope.of(context).unfocus();
-
-    _isLoading = true;
-    if(mounted) {
-      setState(() {});
-    }
-
-    final String responseUrl = Urls.recoveryOTPUrl(widget.emailAddress, _pinCodeTEController.text);
-    final NetworkResponse response = await NetworkCaller().getRequest(responseUrl);
-
-    log(responseUrl);
-
-    _isLoading = false;
-    if(mounted) {
-      setState(() {});
-    }
-
-    if(_pinCodeTEController.value.text.length == 6 && mounted) {
-      Map<String, dynamic> decodedResponse = jsonDecode(jsonEncode(response.body));
-      if(response.isSuccess) {
-        if(decodedResponse['status'] == 'success') {
-
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Set new password'),
-            backgroundColor: mainColor,
-          ));
-
-          Get.offAll(()=> SetPasswordScreen(
-            emailAddress: widget.emailAddress,
-            otpCode: _pinCodeTEController.text,
-          ));
-        }
-        else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Pin code didn't match. Try again!"),
-            backgroundColor: Colors.red,
-          ));
-        }
-      }
-      else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Verification Error!'),
-          backgroundColor: Colors.red,
-        ));
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Fill full code!'),
-        backgroundColor: Colors.red,
-      ));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,22 +57,51 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                   backgroundColor: Colors.white,
                   cursorColor: mainColor,
                   animationType: AnimationType.scale,
-                  onEditingComplete: verifyEmailWithPin,
+                  // onEditingComplete: verifyEmailWithPin,
                 ),
               ),
               const SizedBox(height: 16,),
-              Visibility(
-                visible: _isLoading == false,
-                replacement: const CustomLoading(),
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: verifyEmailWithPin,
-                      child: const Text('Verify'),
+              GetBuilder<PinVerificationController>(
+                builder: (controller) {
+                  return Visibility(
+                    visible: controller.isLoading == false,
+                    replacement: const CustomLoading(),
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            if(!_formKey.currentState!.validate()) {
+                              return;
+                            }
+                            FocusScope.of(context).unfocus();
+
+                            controller.verifyEmailWithPin(widget.emailAddress, _pinCodeTEController.text.trim()).then((value) {
+                              if(value == true) {
+                                Get.offAll(()=> SetPasswordScreen(
+                                  emailAddress: widget.emailAddress,
+                                  otpCode: _pinCodeTEController.text,
+                                ));
+                                Get.snackbar(
+                                    'Success', 'Set new password',
+                                    backgroundColor: mainColor,
+                                    colorText: Colors.white
+                                );
+                              } else {
+                                Get.snackbar(
+                                    'Failed', 'Verification failed! Try again.',
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white
+                                );
+                              }
+                            });
+                          },
+                          child: const Text('Verify'),
+                        ),
+                        signInButton(context)
+                      ],
                     ),
-                    signInButton(context)
-                  ],
-                ),
+                  );
+                }
               ),
             ],
           ),
