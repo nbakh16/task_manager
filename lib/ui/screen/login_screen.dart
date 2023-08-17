@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:line_icons/line_icon.dart';
-import 'package:task_manager/data/models/login_model.dart';
 import 'package:task_manager/data/utils/assets_utils.dart';
-import 'package:task_manager/data/utils/auth_utility.dart';
 import 'package:task_manager/data/utils/colors.dart';
-import 'package:task_manager/ui/screen/bottom_nav_base.dart';
 import 'package:task_manager/ui/screen/email_verification_screen.dart';
 import 'package:task_manager/ui/screen/singup_screen.dart';
+import 'package:task_manager/ui/state_managers/login_controller.dart';
 import 'package:task_manager/ui/widgets/custom_loading.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:get/get.dart';
 
-import '../../data/models/network_response.dart';
-import '../../data/services/network_caller.dart';
-import '../../data/utils/urls.dart';
+import 'bottom_nav_base.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -29,54 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  bool _isLoading = false;
   bool _isObscureText = true;
-
-  Future<void> loginUser() async {
-    if(!_formKey.currentState!.validate()) {
-      return;
-    }
-    FocusScope.of(context).unfocus();
-
-    _isLoading = true;
-    if(mounted) {
-      setState(() {});
-    }
-
-    Map<String, dynamic> requestBody = {
-      "email":_emailTEController.text.trim(),
-      "password":_passwordTEController.text
-    };
-    final NetworkResponse response = await NetworkCaller().postRequest(Urls.loginUrl, requestBody, onLoginScreen: true);
-
-    _isLoading = false;
-    if(mounted) {
-      setState(() {});
-    }
-
-    if(response.isSuccess && mounted) {
-      LoginModel loginModel = LoginModel.fromJson(response.body!);
-      await AuthUtility.saveUserInfo(loginModel);
-
-      _emailTEController.clear();
-      _passwordTEController.clear();
-
-      if(mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Login Successful!'),
-          backgroundColor: mainColor,
-        ));
-
-        Get.offAll(()=> const BottomNavBase());
-      }
-    }
-    else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Login Failed!'),
-        backgroundColor: Colors.red,
-      ));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 obscureText: _isObscureText,
                 textInputAction: TextInputAction.done,
-                onEditingComplete: loginUser,
+                // onEditingComplete: loginUser,
                 validator: (String? value) {
                   if(value?.isEmpty ?? true) {
                     return 'Please enter Password!';
@@ -147,19 +96,48 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               const SizedBox(height: 16,),
-              Visibility(
-                visible: _isLoading == false,
-                replacement: const CustomLoading(),
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: loginUser,
-                      child: const LineIcon.chevronCircleRight()
+              GetBuilder<LoginController>(
+                builder: (loginController) {
+                  return Visibility(
+                    visible: loginController.isLoading == false,
+                    replacement: const CustomLoading(),
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            if(!_formKey.currentState!.validate()) {
+                              return;
+                            }
+                            FocusScope.of(context).unfocus();
+
+                            loginController.loginUser(
+                              _emailTEController.text.trim(),
+                              _passwordTEController.text
+                            ).then((value) {
+                              if(value == true) {
+                                Get.offAll(()=> const BottomNavBase());
+                                Get.snackbar(
+                                  'Success', 'Login Successful!',
+                                  backgroundColor: mainColor,
+                                  colorText: Colors.white
+                                );
+                              } else {
+                                Get.snackbar(
+                                  'Failed', 'Login Failed! Try again.',
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white
+                                );
+                                }
+                            });
+                          },
+                          child: const LineIcon.chevronCircleRight()
+                        ),
+                        forgotPasswordButton(context),
+                        signUpButton(context)
+                      ],
                     ),
-                    forgotPasswordButton(context),
-                    signUpButton(context)
-                  ],
-                ),
+                  );
+                }
               ),
             ],)
           ),
