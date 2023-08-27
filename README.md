@@ -1,4 +1,4 @@
-# Task Manager
+# Task Manager using GetX State Management
 
 #### Ostad Flutter course project
 

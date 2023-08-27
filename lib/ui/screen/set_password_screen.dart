@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screen/login_screen.dart';
-
-import '../../data/models/network_response.dart';
-import '../../data/services/network_caller.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/ui/screen/splash_screen.dart';
+import 'package:task_manager/ui/state_managers/set_password_controller.dart';
 import '../../data/utils/colors.dart';
-import '../../data/utils/urls.dart';
 import '../widgets/custom_loading.dart';
 import '../widgets/screen_background.dart';
 
@@ -19,68 +16,10 @@ class SetPasswordScreen extends StatefulWidget {
 }
 
 class _SetPasswordScreenState extends State<SetPasswordScreen> {
-  bool _isLoading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _passwordTEController = TextEditingController();
   final TextEditingController _confirmPasswordTEController = TextEditingController();
-
-  Future<void> postNewPassword() async {
-    if(!_formKey.currentState!.validate()) {
-      return;
-    }
-    FocusScope.of(context).unfocus();
-
-    _isLoading = true;
-    if(mounted) {
-      setState(() {});
-    }
-
-    Map<String,dynamic> requestBody = {
-      "email":widget.emailAddress,
-      "OTP":widget.otpCode,
-      "password":_confirmPasswordTEController.text
-    };
-    final NetworkResponse response = await NetworkCaller().postRequest(
-        Urls.setPasswordUrl, requestBody
-    );
-    Map<String, dynamic> decodedResponse = jsonDecode(jsonEncode(response.body));
-
-    _isLoading = false;
-    if(mounted) {
-      setState(() {});
-    }
-
-      if(response.isSuccess && mounted) {
-        if(decodedResponse['status'] == 'success') {
-          _passwordTEController.clear();
-          _confirmPasswordTEController.clear();
-
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Password reset successful.'),
-            backgroundColor: mainColor,
-          ));
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const LoginScreen()
-          ));
-        }
-        else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Invalid request!"),
-            backgroundColor: Colors.red,
-          ));
-        }
-      }
-      else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Set password error!'),
-          backgroundColor: Colors.red,
-        ));
-      }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +66,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                       labelText: 'Confirm Password'
                   ),
                   textInputAction: TextInputAction.done,
-                  onEditingComplete: postNewPassword,
+                  // onEditingComplete: postNewPassword,
                   obscureText: true,
                   validator: (String? value) {
                     if(value?.isEmpty ?? true) {
@@ -140,18 +79,45 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                   },
                 ),
                 const SizedBox(height: 16,),
-                Visibility(
-                  visible: _isLoading == false,
-                  replacement: const CustomLoading(),
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: postNewPassword,
-                        child: const Text('Confirm'),
+                GetBuilder<SetPasswordController>(
+                  builder: (controller) {
+                    return Visibility(
+                      visible: controller.isLoading == false,
+                      replacement: const CustomLoading(),
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              if(!_formKey.currentState!.validate()) {
+                                return;
+                              }
+                              FocusScope.of(context).unfocus();
+
+                              controller.postNewPassword(widget.emailAddress,
+                              widget.otpCode, _passwordTEController.text).then((value) {
+                                if(value == true) {
+                                  Get.offAll(()=> const SplashScreen());
+                                  Get.snackbar(
+                                      'Success', 'Password reset successful.',
+                                      backgroundColor: mainColor,
+                                      colorText: Colors.white
+                                  );
+                                } else {
+                                  Get.snackbar(
+                                      'Failed', 'Try again!',
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white
+                                  );
+                                }
+                              });
+                      },
+                            child: const Text('Confirm'),
+                          ),
+                          signInButton(context)
+                        ],
                       ),
-                      signInButton(context)
-                    ],
-                  ),
+                    );
+                  }
                 ),
               ],
             ),
@@ -166,9 +132,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
       children: [
         const Text("Have account? "),
         TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: ()=> Get.back(),
           child: const Text('Sign In'),
         ),
       ],

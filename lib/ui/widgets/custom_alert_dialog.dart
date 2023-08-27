@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CustomAlertDialog extends StatelessWidget {
   final Function() onPress;
@@ -32,9 +33,7 @@ class CustomAlertDialog extends StatelessWidget {
             ),
           ),
           IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: ()=> Get.back(),
               icon: Icon(
                 Icons.cancel_outlined,
                 color: Colors.red.withOpacity(0.75),

@@ -1,13 +1,10 @@
-import 'dart:convert';
-
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icon.dart';
-import 'package:task_manager/data/models/network_response.dart';
-import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/ui/screen/pin_verification_screen.dart';
 
 import '../../data/utils/colors.dart';
-import '../../data/utils/urls.dart';
+import '../state_managers/email_verification_controller.dart';
 import '../widgets/custom_loading.dart';
 import '../widgets/screen_background.dart';
 
@@ -19,59 +16,9 @@ class EmailVerificationScreen extends StatefulWidget {
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
-  bool _isLoading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _emailTEController = TextEditingController();
-
-  Future<void> sendPinToEmail() async {
-    if(!_formKey.currentState!.validate()) {
-      return;
-    }
-    FocusScope.of(context).unfocus();
-
-    _isLoading = true;
-    if(mounted) {
-      setState(() {});
-    }
-
-    final String responseUrl = Urls.recoveryEmailUrl(_emailTEController.text);
-    final NetworkResponse response = await NetworkCaller().getRequest(responseUrl);
-
-    Map<String, dynamic> decodedResponse = jsonDecode(jsonEncode(response.body));
-
-    _isLoading = false;
-    if(mounted) {
-      setState(() {});
-    }
-
-    if(response.isSuccess && mounted) {
-      if(decodedResponse['status'] == 'success') {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Verification mail sent. Kindly check your email.'),
-          backgroundColor: mainColor,
-        ));
-
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PinVerificationScreen(emailAddress: _emailTEController.text)
-            ));
-      }
-      else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('User not found!'),
-          backgroundColor: Colors.red,
-        ));
-      }
-    }
-    else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Failed sending email!'),
-        backgroundColor: Colors.red,
-      ));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,22 +53,48 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                     }
                     return null;
                   },
-                  onEditingComplete: sendPinToEmail,
+                  // onEditingComplete: sendPinToEmail,
                 ),
               ),
               const SizedBox(height: 16,),
-              Visibility(
-                visible: _isLoading == false,
-                replacement: const CustomLoading(),
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: sendPinToEmail,
-                      child: const LineIcon.chevronCircleRight(),
+              GetBuilder<EmailVerificationController>(
+                builder: (controller) {
+                  return Visibility(
+                    visible: controller.isLoading == false,
+                    replacement: const CustomLoading(),
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            if(!_formKey.currentState!.validate()) {
+                              return;
+                            }
+                            FocusScope.of(context).unfocus();
+
+                            controller.sendPinToEmail(_emailTEController.text.trim()).then((value) {
+                              if(value == true) {
+                                Get.to(()=> PinVerificationScreen(emailAddress: _emailTEController.text));
+                                Get.snackbar(
+                                    'OTP Sent', 'Verification mail sent. Kindly check your email.',
+                                    backgroundColor: mainColor,
+                                    colorText: Colors.white
+                                );
+                              } else {
+                                Get.snackbar(
+                                    'Failed', "Couldn't send verification email! Try again.",
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white
+                                );
+                              }
+                            });
+                          },
+                          child: const LineIcon.chevronCircleRight(),
+                        ),
+                        signInButton(context)
+                      ],
                     ),
-                    signInButton(context)
-                  ],
-                ),
+                  );
+                }
               ),
             ],
           ),
@@ -135,9 +108,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       children: [
         const Text("Have account? "),
         TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: ()=> Get.back(),
           child: const Text('Sign In'),
         ),
       ],

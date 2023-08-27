@@ -1,10 +1,11 @@
 import 'dart:io';
-
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
+import 'package:task_manager/ui/state_managers/profile_controller.dart';
 import '../../data/models/login_model.dart';
 import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
@@ -25,7 +26,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _passwordFormKey = GlobalKey<FormState>();
-  bool _isLoading = false;
   bool _isPasswordChanging = false;
 
   UserData userData = AuthUtility.userInfo.data!;
@@ -67,51 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> updateProfile() async {
-    if(!_formKey.currentState!.validate()) {
-      return;
-    }
-    Navigator.pop(context);
-
-    _isLoading = true;
-    if(mounted) {
-      setState(() {});
-    }
-
-    Map<String, dynamic> requestBody = {
-      // "email": AuthUtility.userInfo.data!.email,
-      "firstName": _firstNameTEController.text.trim(),
-      "lastName": _lastNameTEController.text.trim(),
-      "mobile": _mobileTEController.text.trim(),
-      "photo": base64String ?? AuthUtility.userInfo.data?.photo ?? ""
-    };
-    final NetworkResponse response = await NetworkCaller().postRequest(Urls.profileUpdateUrl, requestBody);
-
-    _isLoading = false;
-    if(mounted) {
-      setState(() {});
-    }
-
-    if(response.isSuccess && mounted) {
-      userData.firstName = _firstNameTEController.text.trim();
-      userData.lastName = _lastNameTEController.text.trim();
-      userData.mobile = _mobileTEController.text.trim();
-      AuthUtility.updateUserInfo(userData);
-
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Profile updated!'),
-        backgroundColor: mainColor,
-      ));
-    }
-    else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Failed to update profile!'),
-        backgroundColor: Colors.red,
-      ));
-    }
-    await AuthUtility.getUserInfo();
-  }
-
+  final ProfileController _profileController = Get.find();
   Future<Object?> updateProfileShowDialog(BuildContext context) {
     return showGeneralDialog(
       context: context,
@@ -122,7 +78,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return Transform.scale(
           scale: Curves.easeInOut.transform(anim.value),
           child: CustomAlertDialog(
-            onPress: updateProfile,
+            onPress: (){
+              _profileController.updateProfile(
+                  _firstNameTEController.text.trim(),
+                  _lastNameTEController.text.trim(),
+                  _mobileTEController.text.trim(),
+                  base64String ?? AuthUtility.userInfo.data?.photo ?? ""
+              ).then((value) {
+                if(value == true) {
+                  userData.firstName = _firstNameTEController.text.trim();
+                  userData.lastName = _lastNameTEController.text.trim();
+                  userData.mobile = _mobileTEController.text.trim();
+                  AuthUtility.updateUserInfo(userData);
+
+                  Get.snackbar(
+                      'Success', 'Profile Updated.',
+                      backgroundColor: mainColor,
+                      colorText: Colors.white
+                  );
+                } else {
+                  Get.snackbar(
+                      'Failed', 'Try again!',
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white
+                  );
+                }
+              });
+            },
             title: 'Update Profile',
             content: 'Are you sure to update your profile?',
             actionText: 'Confirm'
@@ -159,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final NetworkResponse response = await NetworkCaller().postRequest(Urls.profileUpdateUrl, requestBody);
 
       if(response.isSuccess && mounted) {
-        Navigator.pop(context);
+        Get.back();
 
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Password updated!'),
@@ -302,22 +284,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onEditingComplete: () => updateProfileShowDialog(context),
               ),
               const SizedBox(height: 16,),
-              Visibility(
-                visible: _isLoading == false,
-                replacement: const Center(child: CircularProgressIndicator()),
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => updateProfileShowDialog(context),
-                      child: const Text('Update'),
+              GetBuilder<ProfileController>(
+                builder: (controller) {
+                  return Visibility(
+                    visible: controller.isLoading == false,
+                    replacement: const Center(child: CircularProgressIndicator()),
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            if(!_formKey.currentState!.validate()) {
+                              return;
+                            }
+                            Get.back();
+
+                            updateProfileShowDialog(context);
+                          },
+                          child: const Text('Update'),
+                        ),
+                        const SizedBox(height: 6.0,),
+                        TextButton(
+                          onPressed: _changePasswordBottomSheet,
+                          child: const Text('Change Password'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 6.0,),
-                    TextButton(
-                      onPressed: _changePasswordBottomSheet,
-                      child: const Text('Change Password'),
-                    ),
-                  ],
-                ),
+                  );
+                }
               ),
             ],)
           ),
@@ -345,7 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: const Text('Gallery'),
               onTap: () {
                 pickImage(ImageSource.gallery);
-                Navigator.of(context).pop();
+                Get.back();
               },
             ),
             ListTile(
@@ -353,7 +346,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: const Text('Camera'),
               onTap: () {
                 pickImage(ImageSource.camera);
-                Navigator.of(context).pop();
+                Get.back();
               },
             ),
           ],
@@ -394,7 +387,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               style: Theme.of(context).primaryTextTheme.titleLarge
                           ),
                           IconButton(
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () => Get.back(),
                               icon: Icon(Icons.cancel_outlined,
                                 color: Colors.red.shade300,
                               )

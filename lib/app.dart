@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/data/utils/theme_utility.dart';
 import 'package:task_manager/ui/screen/splash_screen.dart';
+import 'package:task_manager/ui/state_managers/controller_binding.dart';
 
 class TaskManagerApp extends StatefulWidget {
   static GlobalKey<NavigatorState> globalKey = GlobalKey<NavigatorState>();
@@ -30,15 +33,15 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       navigatorKey: TaskManagerApp.globalKey,
       title: 'Task Manager',
       debugShowCheckedModeBanner: false,
       theme: _lightThemeData(context),
       darkTheme: _darkThemeData(context),
       themeMode: ThemeUtility.isLight ? ThemeMode.light : ThemeMode.dark,
+      initialBinding: ControllerBinding(),
       home: const SplashScreen(),
-      // home: BottomNavBase(isLight: isLight, switchTheme: switchTheme),
     );
   }
 
