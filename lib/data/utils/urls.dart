@@ -1,3 +1,5 @@
+import 'package:task_manager/data/utils/task_status.dart';
+
 class Urls {
   Urls._();
 
@@ -10,10 +12,10 @@ class Urls {
   static String deleteTaskUrl(String id) => '$_baseUrl/deleteTask/$id';
   static String taskStatusUpdateUrl(String id, String taskStatus) => '$_baseUrl/updateTaskStatus/$id/$taskStatus';
 
-  static String newTasksListUrl = '$_baseUrl/listTaskByStatus/New';
-  static String completedTasksListUrl = '$_baseUrl/listTaskByStatus/Completed';
-  static String progressTasksListUrl = '$_baseUrl/listTaskByStatus/Progress';
-  static String canceledTasksListUrl = '$_baseUrl/listTaskByStatus/Canceled';
+  static String newTasksListUrl = '$_baseUrl/listTaskByStatus/${TaskStatus.newTask}';
+  static String completedTasksListUrl = '$_baseUrl/listTaskByStatus/${TaskStatus.completedTask}';
+  static String progressTasksListUrl = '$_baseUrl/listTaskByStatus/${TaskStatus.progressTask}';
+  static String canceledTasksListUrl = '$_baseUrl/listTaskByStatus/${TaskStatus.canceledTask}';
   static String taskStatusCountUrl = '$_baseUrl/taskStatusCount';
 
   static String recoveryEmailUrl(String email) => '$_baseUrl/RecoverVerifyEmail/$email';
