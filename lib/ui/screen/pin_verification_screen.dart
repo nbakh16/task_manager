@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:task_manager/ui/screen/login_screen.dart';
 import 'package:task_manager/data/utils/colors.dart';
 import 'package:task_manager/ui/screen/set_password_screen.dart';
 
@@ -39,7 +38,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       setState(() {});
     }
 
-    final String responseUrl = Urls.recoveryOTPUrl + widget.emailAddress + '/'+ _pinCodeTEController.text;
+    final String responseUrl = Urls.recoveryOTPUrl(widget.emailAddress, _pinCodeTEController.text);
     final NetworkResponse response = await NetworkCaller().getRequest(responseUrl);
 
     log(responseUrl);

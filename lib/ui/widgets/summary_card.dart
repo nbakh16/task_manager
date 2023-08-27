@@ -14,32 +14,30 @@ class SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Card(
-        elevation: 4,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8))
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(taskCount.toString(),
-                style: Theme.of(context).primaryTextTheme.titleLarge?.copyWith(
-                  fontSize: 20, color: textColor
+    return Card(
+      elevation: 4,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(taskCount.toString(),
+              style: Theme.of(context).primaryTextTheme.titleLarge?.copyWith(
+                fontSize: 20, color: textColor
+              )
+            ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(taskType,
+                style: Theme.of(context).primaryTextTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w500, color: textColor
                 )
               ),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(taskType,
-                  style: Theme.of(context).primaryTextTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w500, color: textColor
-                  )
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

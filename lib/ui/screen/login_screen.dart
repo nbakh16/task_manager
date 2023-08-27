@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/models/login_model.dart';
 import 'package:task_manager/data/utils/assets_utils.dart';
@@ -86,9 +87,15 @@ class _LoginScreenState extends State<LoginScreen> {
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            children: AnimateList(
+            interval: 50.ms,
+              effects: [
+                const ScaleEffect(curve: Curves.easeInOut),
+                ShimmerEffect(delay: 900.ms, color: mainColor.shade100.withOpacity(0.35))
+              ],
             children: [
               Align(alignment: Alignment.center, child: Image.asset(AssetsUtils.appLogoPNG, width: 64)),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text('Get Started With',
                 textAlign: TextAlign.start,
                 style: Theme.of(context).primaryTextTheme.titleLarge,
@@ -155,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ],
                 ),
               ),
-            ],
+            ],)
           ),
         ),
       )

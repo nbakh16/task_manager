@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:task_manager/data/utils/auth_utility.dart';
+import 'package:task_manager/data/utils/base64_image.dart';
 import 'package:task_manager/data/utils/tasks_screen_info.dart';
 import 'package:task_manager/data/utils/theme_utility.dart';
 import 'package:task_manager/ui/screen/profile_screen.dart';
@@ -11,7 +13,6 @@ import 'package:task_manager/ui/widgets/custom_alert_dialog.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/services/network_caller.dart';
-import '../../data/utils/base64_image.dart';
 import '../../data/utils/task_status.dart';
 import '../../data/utils/urls.dart';
 import '../widgets/custom_loading.dart';
@@ -78,8 +79,6 @@ class _BottomNavBaseState extends State<BottomNavBase> {
       ));
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -149,10 +148,6 @@ class _BottomNavBaseState extends State<BottomNavBase> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        // onPressed: () {
-        //   Navigator.push(context,
-        //       MaterialPageRoute(builder: (context) => const CreateTaskScreen()));
-        // },
         onPressed: createTaskModalBottomSheet,
         child: const Icon(Icons.add),
       ),
@@ -168,11 +163,42 @@ class _BottomNavBaseState extends State<BottomNavBase> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          profilePicture(context),
-          const SizedBox(width: 6.0,),
+          profilePicture(),
+          const SizedBox(width: 12.0,),
           appBarTitle(context),
         ],
       ),
+    );
+  }
+
+  Column appBarTitle(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text('${AuthUtility.userInfo.data?.firstName.toString()} '
+              '${AuthUtility.userInfo.data?.lastName.toString()}',
+              style: Theme.of(context).primaryTextTheme.titleLarge!.copyWith(
+                  color: Colors.white
+              )),
+        ),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(AuthUtility.userInfo.data?.email.toString() ?? "email@abc.com",
+              style: Theme.of(context).primaryTextTheme.titleSmall!.copyWith(
+                  color: mainColor.shade50
+              )),
+        ),
+      ],
+    );
+  }
+
+  CircleAvatar profilePicture() {
+    String userPhoto = AuthUtility.userInfo.data!.photo!;
+    return CircleAvatar(
+      radius: 25,
+      foregroundImage: Base64Image.getBase64Image(userPhoto),
     );
   }
 
@@ -195,8 +221,11 @@ class _BottomNavBaseState extends State<BottomNavBase> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
+                  children: AnimateList(
+                  interval: 70.ms,
+                  effects: const [ScaleEffect(curve: Curves.easeInOut)],
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -265,50 +294,12 @@ class _BottomNavBaseState extends State<BottomNavBase> {
                         ],
                       ),
                     ),
-                  ],
+                  ],)
                 ),
               ),
             ),
           );
         });
-  }
-
-  Column appBarTitle(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text('${AuthUtility.userInfo.data?.firstName.toString()} '
-              '${AuthUtility.userInfo.data?.lastName.toString()}',
-              style: Theme.of(context).primaryTextTheme.titleLarge!.copyWith(
-                  color: Colors.white
-              )),
-        ),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(AuthUtility.userInfo.data?.email.toString() ?? "email@abc.com",
-              style: Theme.of(context).primaryTextTheme.titleSmall!.copyWith(
-                  color: mainColor.shade50
-              )),
-        ),
-      ],
-    );
-  }
-
-  Padding profilePicture(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: CircleAvatar(
-        radius: 28,
-        foregroundImage: Base64Image().isBase64String(AuthUtility.userInfo.data?.photo)
-            ? Base64Image.imageFromBase64String()
-            : NetworkImage(AuthUtility.userInfo.data?.photo ?? ''),
-        child: Text('${AuthUtility.userInfo.data?.firstName![0]}',
-          style: Theme.of(context).primaryTextTheme.titleLarge,
-        ),
-      ),
-    );
   }
 
   Future<dynamic> signOutShowDialog(BuildContext context) {
